@@ -1,0 +1,142 @@
+.review-page {
+  padding: 2rem 0;
+}
+
+.review-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.review-container h1 {
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.review-container h2 {
+  color: var(--primary-color);
+  margin: 2rem 0 1rem 0;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+.info-section {
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.scores-section {
+  margin-bottom: 2rem;
+}
+
+.scores-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.scores-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.scores-table thead {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
+}
+
+.scores-table th,
+.scores-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.scores-table th {
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+}
+
+.scores-table tbody tr:nth-child(odd) {
+  background: rgba(102, 126, 234, 0.02);
+}
+
+.scores-table tbody tr:hover {
+  background: rgba(102, 126, 234, 0.08);
+}
+
+.hole-num {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.scores-table input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.scores-table input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.button-group .btn {
+  flex: 1;
+  max-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .review-container {
+    padding: 1rem;
+  }
+
+  .scores-table {
+    font-size: 0.9rem;
+  }
+
+  .scores-table th,
+  .scores-table td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .button-group .btn {
+    max-width: 100%;
+  }
+}
