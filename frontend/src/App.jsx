@@ -40,8 +40,12 @@ function AppContent() {
 }
 
 function App() {
+  // 本番環境では basename="/Golf_Analytics"を使用
+  // 開発環境では basename=""を使用
+  const basename = process.env.NODE_ENV === 'production' ? '/Golf_Analytics' : '/';
+  
   return (
-    <Router basename="/Golf_Analytics">
+    <Router basename={basename}>
       <AppContent />
     </Router>
   );

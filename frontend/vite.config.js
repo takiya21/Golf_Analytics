@@ -1,5 +1,25 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import fs from 'fs'
+import path from 'path'
+
+// hole_img フォルダを配信するカスタムミドルウェア
+function serveHoleImages() {
+  return {
+    name: 'serve-hole-images',
+    configureServer(server) {
+      server.middlewares.use('/hole_img', (req, res, next) => {
+        const filePath = path.join(__dirname, '..', 'hole_img', req.url)
+        if (fs.existsSync(filePath)) {
+          res.setHeader('Content-Type', 'image/webp')
+          res.end(fs.readFileSync(filePath))
+        } else {
+          next()
+        }
+      })
+    }
+  }
+}
 
 export default defineConfig({
   base: '/',
@@ -7,7 +27,8 @@ export default defineConfig({
     react({
       // FastRefresh最適化
       fastRefresh: true,
-    })
+    }),
+    serveHoleImages()
   ],
   server: {
     port: 3000,
@@ -18,16 +39,6 @@ export default defineConfig({
       interval: 100,
       batchDelay: 100,
       ignored: ['node_modules/**', '.git/**']
-    },
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      },
-      '/hole_img': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      }
     },
     // Performance optimization
     hmr: {
