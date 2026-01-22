@@ -41,7 +41,7 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/Golf_Analytics">
       <AppContent />
     </Router>
   );
