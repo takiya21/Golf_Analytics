@@ -13,7 +13,7 @@ const LAKE_HAMAMATSU_HOLES = {
   6: { par: 4, yardage: 350 },
   7: { par: 3, yardage: 173 },
   8: { par: 4, yardage: 391 },
-  9: { par: 4, yardage: 410 },
+  9: { par: 5, yardage: 492 },
   10: { par: 4, yardage: 400 },
   11: { par: 3, yardage: 151 },
   12: { par: 5, yardage: 500 },
@@ -56,7 +56,10 @@ const CourseSelect = () => {
       
       // lake-hamamatsu コースの場合は定数データを適用
       let courseData = response.data;
-      if (courseData.name && courseData.name.includes('浜松')) {
+      // コース名から空白を削除して比較
+      const courseNameNormalized = courseData.name ? courseData.name.replace(/\s+/g, '') : '';
+      if (courseNameNormalized.includes('浜松')) {
+        console.log('Applying LAKE_HAMAMATSU_HOLES constant data for course:', courseData.name);
         courseData = {
           ...courseData,
           holes: (courseData.holes || []).map((hole) => ({
@@ -131,7 +134,7 @@ const CourseSelect = () => {
                     <div className="hole-stats">
                       <div className="stat">
                         <span className="label">Hole {hole.hole_number}</span>
-                        <span className="value">Par {hole.par}</span>
+                        <span className="value">Par {hole.par} {hole.yardage}y</span>
                       </div>
                     </div>
                   </div>

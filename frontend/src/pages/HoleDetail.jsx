@@ -13,7 +13,7 @@ const LAKE_HAMAMATSU_HOLES = {
   6: { par: 4, yardage: 350 },
   7: { par: 3, yardage: 173 },
   8: { par: 4, yardage: 391 },
-  9: { par: 4, yardage: 410 },
+  9: { par: 5, yardage: 492 },
   10: { par: 4, yardage: 400 },
   11: { par: 3, yardage: 151 },
   12: { par: 5, yardage: 500 },
@@ -49,6 +49,7 @@ const HoleDetail = () => {
       // lake-hamamatsu コースの場合は定数データを適用
       if (holeData && LAKE_HAMAMATSU_HOLES[holeData.hole_number]) {
         const constData = LAKE_HAMAMATSU_HOLES[holeData.hole_number];
+        console.log(`Applying constant data for Hole ${holeData.hole_number}:`, constData);
         holeData = {
           ...holeData,
           par: constData.par,
