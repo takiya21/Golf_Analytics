@@ -10,6 +10,7 @@ const HoleDetail = () => {
   const parArray = [4, 4, 3, 4, 5, 4, 3, 4, 5, 4, 3, 5, 4, 4, 4, 3, 5, 4];
   const yardageArray = [420, 306, 182, 443, 472, 350, 173, 391, 492, 400, 151, 500, 442, 320, 366, 191, 508, 383];
   const handicapArray = [9, 15, 17, 3, 1, 11, 18, 13, 5, 7, 16, 2, 8, 14, 10, 18, 4, 12];
+  const basePath = import.meta.env.BASE_URL;
   
   const courseData = {
     id: 'lake-hamamatsu',
@@ -24,7 +25,7 @@ const HoleDetail = () => {
         par: holePar,
         yardage: holeYardage,
         handicap: handicapArray[i],
-        image: `/hole_img/lake-hamamatsu/Hole${holeNum}_par${holePar}_${holeYardage}yard.webp`
+        image: `${basePath}hole_img/lake-hamamatsu/Hole${holeNum}_par${holePar}_${holeYardage}yard.webp`
       };
     })
   };

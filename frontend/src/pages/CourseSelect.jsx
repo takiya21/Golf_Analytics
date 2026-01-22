@@ -18,12 +18,13 @@ const CourseSelect = () => {
     const yardageArray = [420, 306, 182, 443, 472, 350, 173, 391, 492, 400, 151, 500, 442, 320, 366, 191, 508, 383];
     const par = parArray[i];
     const yardage = yardageArray[i];
+    const basePath = import.meta.env.BASE_URL;
     
     return {
       hole_number: holeNum,
       par: par,
       yardage: yardage,
-      image: `/hole_img/lake-hamamatsu/Hole${holeNum}_par${par}_${yardage}yard.webp`
+      image: `${basePath}hole_img/lake-hamamatsu/Hole${holeNum}_par${par}_${yardage}yard.webp`
     };
   });
 
