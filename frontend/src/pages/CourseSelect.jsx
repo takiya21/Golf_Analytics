@@ -8,7 +8,7 @@ const CourseSelect = () => {
   // Lake Hamamatsu コースデータ
   const course = { 
     id: 'lake-hamamatsu', 
-    name: 'Lake Hamamatsu',
+    name: 'レイク浜松カントリークラブ',
     par: 72
   };
 

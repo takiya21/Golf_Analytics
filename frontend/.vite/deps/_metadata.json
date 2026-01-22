@@ -1,59 +1,65 @@
 {
-  "hash": "a0fa0d53",
-  "browserHash": "53e432e8",
+  "hash": "f11ecd4d",
+  "browserHash": "3b13b098",
   "optimized": {
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "279e2df0",
+      "fileHash": "53f60852",
       "needsInterop": true
     },
     "react-dom": {
       "src": "../../node_modules/react-dom/index.js",
       "file": "react-dom.js",
-      "fileHash": "a5241121",
+      "fileHash": "5aad2bb0",
       "needsInterop": true
     },
     "react-router-dom": {
       "src": "../../node_modules/react-router-dom/dist/index.js",
       "file": "react-router-dom.js",
-      "fileHash": "e91a7116",
+      "fileHash": "d71fb8e3",
       "needsInterop": false
     },
     "axios": {
       "src": "../../node_modules/axios/index.js",
       "file": "axios.js",
-      "fileHash": "e847953e",
+      "fileHash": "251e0ea7",
       "needsInterop": false
     },
     "react/jsx-runtime": {
       "src": "../../node_modules/react/jsx-runtime.js",
       "file": "react_jsx-runtime.js",
-      "fileHash": "1d862e77",
+      "fileHash": "033c7807",
       "needsInterop": true
     },
     "react/jsx-dev-runtime": {
       "src": "../../node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "91604aa7",
+      "fileHash": "25c0176b",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "8f5aecb3",
+      "fileHash": "9b506981",
       "needsInterop": true
+    },
+    "recharts": {
+      "src": "../../node_modules/recharts/es6/index.js",
+      "file": "recharts.js",
+      "fileHash": "c0951bde",
+      "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-EI554WWR": {
-      "file": "chunk-EI554WWR.js"
+    "chunk-LZLOI2WW": {
+      "file": "chunk-LZLOI2WW.js"
     },
-    "chunk-XMMJGW5B": {
-      "file": "chunk-XMMJGW5B.js"
+    "chunk-MA2WHGMY": {
+      "file": "chunk-MA2WHGMY.js"
     },
-    "chunk-5WWUZCGV": {
-      "file": "chunk-5WWUZCGV.js"
+    "chunk-ZC22LKFR": {
+      "file": "chunk-ZC22LKFR.js"
     }
   }
 }

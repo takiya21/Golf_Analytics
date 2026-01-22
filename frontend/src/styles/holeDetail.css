@@ -27,36 +27,118 @@
 
 .hole-info-overlay {
   position: absolute;
-  bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
   color: white;
   padding: 2rem;
 }
 
+.hole-info-overlay.hole-info-top {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  text-align: left;
+}
+
+.hole-info-overlay.hole-info-bottom {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+  text-align: center;
+}
+
 .hole-info-overlay h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.hole-info-overlay h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.75rem;
 }
 
 .hole-specs {
   display: flex;
+  justify-content: center;
   gap: 2rem;
   font-size: 1.1rem;
 }
 
-.history-section,
-.stats-section {
+/* セクション共通スタイル */
+.stats-section,
+.score-distribution-section,
+.score-history-summary-section,
+.graph-section,
+.input-form-section {
   padding: 2rem;
   border-top: 2px solid var(--border-color);
 }
 
-.history-section h2,
-.stats-section h2 {
+.stats-section h2,
+.score-distribution-section h2,
+.score-history-summary-section h2,
+.graph-section h2,
+.input-form-section h2 {
   color: var(--primary-color);
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
+}
+
+/* グラフセクション */
+.chart-container {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pie-chart-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* 入力フォームセクション */
+.input-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  background: rgba(102, 126, 234, 0.02);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* 履歴テーブル */
+.table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
 
 .history-table {
@@ -78,6 +160,7 @@
 
 .history-table th {
   font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .history-table tbody tr:nth-child(odd) {
@@ -88,7 +171,44 @@
   background: rgba(102, 126, 234, 0.08);
 }
 
-.history-table .score {
+.history-table .score-cell {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+/* 過去のスコア表 */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summary-table thead {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
+}
+
+.summary-table th,
+.summary-table td {
+  padding: 1rem 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.summary-table th {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.summary-table tbody tr:nth-child(odd) {
+  background: rgba(102, 126, 234, 0.02);
+}
+
+.summary-table tbody tr:hover {
+  background: rgba(102, 126, 234, 0.08);
+}
+
+.summary-table .score-cell {
   font-weight: 600;
   color: var(--primary-color);
   font-size: 1.1rem;
@@ -118,6 +238,12 @@
   font-size: 1.8rem;
   font-weight: bold;
   color: var(--primary-color);
+}
+
+/* ボタンスタイル */
+.btn-block {
+  width: 100%;
+  grid-column: 1 / -1;
 }
 
 .navigation-buttons {

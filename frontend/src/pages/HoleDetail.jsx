@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import '../styles/holeDetail.css';
 
 const HoleDetail = () => {
@@ -14,7 +15,7 @@ const HoleDetail = () => {
   
   const courseData = {
     id: 'lake-hamamatsu',
-    name: 'Lake Hamamatsu',
+    name: 'レイク浜松カントリークラブ',
     par: 72,
     holes: Array.from({ length: 18 }, (_, i) => {
       const holeNum = i + 1;
@@ -32,6 +33,180 @@ const HoleDetail = () => {
 
   const currentHoleNumber = parseInt(holeId);
   const hole = courseData.holes.find(h => h.hole_number === currentHoleNumber);
+
+  // ローカルストレージからこのホールの履歴データを取得
+  const holeHistory = useMemo(() => {
+    const rounds = JSON.parse(localStorage.getItem('golfys_rounds') || '[]');
+    return rounds
+      .flatMap(round => {
+        const holeData = round.holes[currentHoleNumber];
+        if (!holeData || !holeData.score) return [];
+        return {
+          date: round.play_date,
+          score: holeData.score,
+          putts: holeData.putts || 0,
+          first_club: holeData.first_club || '-',
+          fairway_kept: holeData.fairway_kept || '-',
+          ob_count: holeData.ob_count || 0,
+          bunker_count: holeData.bunker_count || 0,
+          penalty_count: holeData.penalty_count || 0
+        };
+      })
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+  }, [currentHoleNumber]);
+
+  // 統計データの計算
+  const stats = useMemo(() => {
+    if (holeHistory.length === 0) {
+      return {
+        bestScore: '-',
+        avgScore: '-',
+        roundCount: 0,
+        eagle: 0,
+        birdie: 0,
+        par: 0,
+        bogey: 0,
+        tripleBogie: 0,
+        extraBogie: 0,
+        avgPutts: '-',
+        totalOB: 0,
+        totalBunker: 0,
+        totalPenalty: 0
+      };
+    }
+
+    const scores = holeHistory.map(h => h.score);
+    const putts = holeHistory.map(h => h.putts);
+
+    const bestScore = Math.min(...scores);
+    const avgScore = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
+    const avgPutts = (putts.reduce((a, b) => a + b, 0) / putts.length).toFixed(2);
+
+    const eagle = scores.filter(s => s <= hole.par - 2).length;
+    const birdie = scores.filter(s => s === hole.par - 1).length;
+    const par = scores.filter(s => s === hole.par).length;
+    const bogey = scores.filter(s => s === hole.par + 1).length;
+    const tripleBogie = scores.filter(s => s === hole.par + 2).length;
+    const extraBogie = scores.filter(s => s >= hole.par + 3).length;
+
+    const totalOB = holeHistory.reduce((sum, h) => sum + (h.ob_count || 0), 0);
+    const totalBunker = holeHistory.reduce((sum, h) => sum + (h.bunker_count || 0), 0);
+    const totalPenalty = holeHistory.reduce((sum, h) => sum + (h.penalty_count || 0), 0);
+
+    return {
+      bestScore,
+      avgScore,
+      roundCount: scores.length,
+      eagle,
+      birdie,
+      par,
+      bogey,
+      tripleBogie,
+      extraBogie,
+      avgPutts,
+      totalOB,
+      totalBunker,
+      totalPenalty
+    };
+  }, [holeHistory, hole.par]);
+
+  // スコア分布のグラフデータ
+  const scoreDistributionData = useMemo(() => {
+    const data = [];
+    if (stats.eagle > 0) data.push({ name: 'イーグル', value: stats.eagle });
+    if (stats.birdie > 0) data.push({ name: 'バーディ', value: stats.birdie });
+    if (stats.par > 0) data.push({ name: 'パー', value: stats.par });
+    if (stats.bogey > 0) data.push({ name: 'ボギー', value: stats.bogey });
+    if (stats.tripleBogie > 0) data.push({ name: 'トリプル', value: stats.tripleBogie });
+    if (stats.extraBogie > 0) data.push({ name: '＋４以上', value: stats.extraBogie });
+    return data;
+  }, [stats]);
+
+  // グラフ用データ
+  const chartData = holeHistory.map((h, idx) => ({
+    date: new Date(h.date).toLocaleDateString('ja-JP'),
+    score: h.score,
+    putts: h.putts,
+    roundIndex: idx + 1
+  }));
+
+  // フォーム状態
+  const [formData, setFormData] = useState({
+    date: new Date().toISOString().split('T')[0],
+    score: '',
+    putts: '',
+    first_club: '',
+    fairway_kept: '',
+    ob_count: 0,
+    bunker_count: 0,
+    penalty_count: 0
+  });
+
+  const clubs = ['ドライバー', '3W', '5W', '4U', '5U', '6U', '2I', '3I', '4I', '5I', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'パター'];
+  const fwKeepOptions = ['〇', '左', '右', 'ショート'];
+
+  // スコア追加
+  const handleAddScore = () => {
+    if (!formData.score) {
+      alert('スコアを入力してください');
+      return;
+    }
+
+    const rounds = JSON.parse(localStorage.getItem('golfys_rounds') || '[]');
+    
+    // 新しいラウンドを作成するか、既存ラウンドに追加するか判定
+    const existingRound = rounds.find(r => r.play_date === formData.date);
+    
+    if (existingRound) {
+      // 既存ラウンドに追加
+      existingRound.holes[currentHoleNumber] = {
+        score: parseInt(formData.score),
+        putts: parseInt(formData.putts) || 0,
+        first_club: formData.first_club,
+        fairway_kept: formData.fairway_kept,
+        ob_count: parseInt(formData.ob_count) || 0,
+        bunker_count: parseInt(formData.bunker_count) || 0,
+        penalty_count: parseInt(formData.penalty_count) || 0
+      };
+    } else {
+      // 新しいラウンドを作成
+      const newRound = {
+        id: Date.now(),
+        course_id: 'lake-hamamatsu',
+        course_name: courseData.name,
+        play_date: formData.date,
+        holes: {
+          [currentHoleNumber]: {
+            score: parseInt(formData.score),
+            putts: parseInt(formData.putts) || 0,
+            first_club: formData.first_club,
+            fairway_kept: formData.fairway_kept,
+            ob_count: parseInt(formData.ob_count) || 0,
+            bunker_count: parseInt(formData.bunker_count) || 0,
+            penalty_count: parseInt(formData.penalty_count) || 0
+          }
+        },
+        created_at: new Date().toISOString()
+      };
+      rounds.push(newRound);
+    }
+
+    localStorage.setItem('golfys_rounds', JSON.stringify(rounds));
+    
+    alert('スコアが保存されました！');
+    
+    // フォームをリセット
+    setFormData({
+      date: new Date().toISOString().split('T')[0],
+      score: '',
+      putts: '',
+      first_club: '',
+      fairway_kept: '',
+      ob_count: 0,
+      bunker_count: 0,
+      penalty_count: 0
+    });
+  };
 
   if (!hole) {
     return (
@@ -53,49 +228,287 @@ const HoleDetail = () => {
   return (
     <div className="hole-detail-page">
       <div className="hole-detail-container">
+        {/* ホール画像セクション */}
         <div className="hole-image-section">
           <img src={hole.image} alt={`Hole ${hole.hole_number}`} className="hole-image-large" />
-          <div className="hole-info-overlay">
-            <h1>{courseData.name} - Hole {hole.hole_number}</h1>
+          <div className="hole-info-overlay hole-info-top">
+            <h1>{courseData.name}</h1>
+          </div>
+          <div className="hole-info-overlay hole-info-bottom">
+            <h2>Hole {hole.hole_number}</h2>
             <div className="hole-specs">
               <span>Par {hole.par}</span>
               <span>{hole.yardage} yards</span>
-              <span>HCP {hole.handicap}</span>
             </div>
           </div>
         </div>
 
+        {/* メインコンテンツ */}
         <div className="hole-content">
-          <div className="stats-section">
-            <h2>成績統計</h2>
+          {/* 統計セクション */}
+          <section className="stats-section">
+            <h2>📊 成績統計</h2>
             <div className="stats-grid">
               <div className="stat-box">
                 <div className="stat-label">ベストスコア</div>
-                <div className="stat-value">-</div>
+                <div className="stat-value">{stats.bestScore}</div>
               </div>
               <div className="stat-box">
                 <div className="stat-label">平均スコア</div>
-                <div className="stat-value">-</div>
+                <div className="stat-value">{stats.avgScore}</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-label">平均パット</div>
+                <div className="stat-value">{stats.avgPutts}</div>
               </div>
               <div className="stat-box">
                 <div className="stat-label">ラウンド数</div>
-                <div className="stat-value">0</div>
+                <div className="stat-value">{stats.roundCount}</div>
               </div>
               <div className="stat-box">
                 <div className="stat-label">イーグル</div>
-                <div className="stat-value">0</div>
+                <div className="stat-value">{stats.eagle}</div>
               </div>
               <div className="stat-box">
                 <div className="stat-label">バーディ</div>
-                <div className="stat-value">0</div>
+                <div className="stat-value">{stats.birdie}</div>
               </div>
               <div className="stat-box">
                 <div className="stat-label">パー</div>
-                <div className="stat-value">0</div>
+                <div className="stat-value">{stats.par}</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-label">ボギー</div>
+                <div className="stat-value">{stats.bogey}</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-label">OB数</div>
+                <div className="stat-value">{stats.totalOB}</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-label">バンカー数</div>
+                <div className="stat-value">{stats.totalBunker}</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-label">ペナルティ</div>
+                <div className="stat-value">{stats.totalPenalty}</div>
               </div>
             </div>
-          </div>
+          </section>
 
+          {/* スコア分布円グラフ */}
+          {scoreDistributionData.length > 0 && (
+            <section className="score-distribution-section">
+              <h2>📊 スコア分布</h2>
+              <div className="chart-container pie-chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={scoreDistributionData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, value, percent }) => `${name} ${value} (${(percent * 100).toFixed(0)}%)`}
+                      outerRadius={100}
+                      innerRadius={60}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {scoreDistributionData.map((entry, index) => {
+                        const colors = ['#4ecdc4', '#ff6b6b', '#95e1d3', '#f8b500', '#e67e22', '#e74c3c'];
+                        return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                      })}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </section>
+          )}
+
+          {/* 手動入力フォーム */}
+          <section className="input-form-section">
+            <h2>➕ スコアを追加</h2>
+            <div className="input-form">
+              <div className="form-group">
+                <label>プレー日</label>
+                <input 
+                  type="date" 
+                  value={formData.date}
+                  onChange={(e) => setFormData({...formData, date: e.target.value})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>スコア *</label>
+                <input 
+                  type="number" 
+                  min="1" 
+                  max="12"
+                  value={formData.score}
+                  onChange={(e) => setFormData({...formData, score: e.target.value})}
+                  placeholder="スコアを入力"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>パット</label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="12"
+                  value={formData.putts}
+                  onChange={(e) => setFormData({...formData, putts: e.target.value})}
+                  placeholder="パット数"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>1打目クラブ</label>
+                <select 
+                  value={formData.first_club}
+                  onChange={(e) => setFormData({...formData, first_club: e.target.value})}
+                >
+                  <option value="">選択してください</option>
+                  {clubs.map(club => (
+                    <option key={club} value={club}>{club}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>FWキープ</label>
+                <select 
+                  value={formData.fairway_kept}
+                  onChange={(e) => setFormData({...formData, fairway_kept: e.target.value})}
+                >
+                  <option value="">選択してください</option>
+                  {fwKeepOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>OB</label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="3"
+                  value={formData.ob_count}
+                  onChange={(e) => setFormData({...formData, ob_count: parseInt(e.target.value) || 0})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>バンカー</label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="3"
+                  value={formData.bunker_count}
+                  onChange={(e) => setFormData({...formData, bunker_count: parseInt(e.target.value) || 0})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>ペナルティ</label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="3"
+                  value={formData.penalty_count}
+                  onChange={(e) => setFormData({...formData, penalty_count: parseInt(e.target.value) || 0})}
+                />
+              </div>
+
+              <button onClick={handleAddScore} className="btn btn-primary btn-block">
+                スコアを保存
+              </button>
+            </div>
+          </section>
+
+          {/* スコア履歴表 - 成績統計の直下 */}
+          {holeHistory.length > 0 && (
+            <section className="score-history-summary-section">
+              <h2>📋 過去のスコア</h2>
+              <div className="table-container">
+                <table className="summary-table">
+                  <thead>
+                    <tr>
+                      <th>日付</th>
+                      <th>スコア</th>
+                      <th>パット</th>
+                      <th>1打目</th>
+                      <th>FW</th>
+                      <th>OB</th>
+                      <th>Sand</th>
+                      <th>ペナ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {holeHistory.map((record, idx) => (
+                      <tr key={idx}>
+                        <td>{new Date(record.date).toLocaleDateString('ja-JP')}</td>
+                        <td className="score-cell">{record.score}</td>
+                        <td>{record.putts}</td>
+                        <td>{record.first_club}</td>
+                        <td>{record.fairway_kept}</td>
+                        <td>{record.ob_count}</td>
+                        <td>{record.bunker_count}</td>
+                        <td>{record.penalty_count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
+
+          {/* グラフセクション */}
+          {holeHistory.length > 0 && (
+            <section className="graph-section">
+              <h2>📈 スコア推移</h2>
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="date" 
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis label={{ value: 'スコア', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#f5f5f5', border: '1px solid #ddd' }}
+                      formatter={(value) => value}
+                    />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="score" 
+                      stroke="#ff6b6b" 
+                      dot={{ fill: '#ff6b6b', r: 4 }}
+                      strokeWidth={2}
+                      name="スコア"
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="putts" 
+                      stroke="#4ecdc4" 
+                      dot={{ fill: '#4ecdc4', r: 4 }}
+                      strokeWidth={2}
+                      name="パット"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </section>
+          )}
+
+          {/* ナビゲーションボタン */}
           <div className="navigation-buttons">
             {prevHole && (
               <button className="btn btn-secondary" onClick={() => navigate(`/hole/${prevHole}`)}>
