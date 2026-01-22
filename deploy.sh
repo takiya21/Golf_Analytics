@@ -21,34 +21,26 @@ cd "$PROJECT_ROOT/frontend"
 npm run build
 echo -e "${GREEN}✓ ビルド完了${NC}"
 
-# ステップ 2: ビルドファイルを Golf_Analytics 直下にコピー
+# ステップ 2: ビルドファイルを docs フォルダにコピー
 echo -e "\n${BLUE}[2/3] ビルドファイルをコピー中...${NC}"
-# 既存の dist ファイルを削除
-rm -rf "$PROJECT_ROOT/dist"
+# 既存の docs フォルダを削除
+rm -rf "$PROJECT_ROOT/docs"
+# docs フォルダを作成して Golf_Analytics サブディレクトリを作成
+mkdir -p "$PROJECT_ROOT/docs/Golf_Analytics"
 # ビルドファイルをコピー
-cp -r "$PROJECT_ROOT/frontend/dist" "$PROJECT_ROOT/"
+cp -r "$PROJECT_ROOT/frontend/dist"/* "$PROJECT_ROOT/docs/Golf_Analytics/"
 echo -e "${GREEN}✓ コピー完了${NC}"
-ls -la "$PROJECT_ROOT/dist/" | head -10
+ls -la "$PROJECT_ROOT/docs/Golf_Analytics/" | head -10
 
 # ステップ 3: Git にコミット＆プッシュ
 echo -e "\n${BLUE}[3/3] GitHub にプッシュ中...${NC}"
 cd "$PROJECT_ROOT"
 
-# 変更確認
-if [ -z "$(git status --porcelain dist 2>/dev/null)" ]; then
-    echo -e "${GREEN}✓ 変更がありません（スキップ）${NC}"
-else
-    echo -e "${BLUE}変更ファイル:${NC}"
-    git status --short dist 2>/dev/null | head -5 || true
-    
-    # コミット
-    git add dist/
-    git commit -m "Deploy Golf Analytics - $(date '+%Y-%m-%d %H:%M:%S')"
-    
-    # プッシュ
-    git push origin main
-    echo -e "${GREEN}✓ プッシュ完了${NC}"
-fi
+# docs フォルダをステージング
+git add docs/ .nojekyll
+git commit -m "Deploy Golf Analytics to /docs - $(date '+%Y-%m-%d %H:%M:%S')"
+git push origin main
+echo -e "${GREEN}✓ プッシュ完了${NC}"
 
 # 完了
 echo -e "\n${GREEN}================================${NC}"
