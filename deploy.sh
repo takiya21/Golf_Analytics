@@ -22,7 +22,7 @@ npm run build
 echo -e "${GREEN}✓ ビルド完了${NC}"
 
 # ステップ 2: ビルドファイルを docs フォルダにコピー
-echo -e "\n${BLUE}[2/2] ビルドファイルをコピー中...${NC}"
+echo -e "\n${BLUE}[2/3] ビルドファイルをコピー中...${NC}"
 # 既存の docs フォルダを削除
 rm -rf "$PROJECT_ROOT/docs"
 # docs フォルダを作成
@@ -30,9 +30,12 @@ mkdir -p "$PROJECT_ROOT/docs"
 # ビルドファイルを docs フォルダ直下にコピー
 cp -r "$PROJECT_ROOT/frontend/dist"/* "$PROJECT_ROOT/docs/"
 echo -e "${GREEN}✓ コピー完了${NC}"
-ls -la "$PROJECT_ROOT/docs/" | head -10
 
-# 完了
+# ステップ 3: 画像ファイルをコピー
+echo -e "\n${BLUE}[3/3] 画像ファイルをコピー中...${NC}"
+cp -r "$PROJECT_ROOT/hole_img" "$PROJECT_ROOT/docs/"
+echo -e "${GREEN}✓ 画像コピー完了${NC}"
+ls -la "$PROJECT_ROOT/docs/" | head -10
 echo -e "\n${GREEN}================================${NC}"
 echo -e "${GREEN}✓ ビルドとコピーが完了しました!${NC}"
 echo -e "${GREEN}================================${NC}"
