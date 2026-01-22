@@ -1,47 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { statsService, roundService } from '../services/api';
 import '../styles/dashboard.css';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState(null);
-  const [rounds, setRounds] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      const [statsResponse, roundsResponse] = await Promise.all([
-        statsService.getOverallStats(),
-        roundService.getAllRounds()
-      ]);
-      setStats(statsResponse.data);
-      setRounds(roundsResponse.data.slice(0, 5)); // Get 5 most recent rounds
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
-      setLoading(false);
-    }
+  // ダミーデータ（データ保存機能なし）
+  const stats = {
+    total_rounds: 0,
+    avg_score: '-',
+    avg_putts: '-',
+    fairway_kept_rate: '-',
+    best_score: '-',
+    courses_played: 0
   };
 
-  if (loading) {
-    return <div className="loading">読込中...</div>;
-  }
+  const rounds = [];
 
   return (
     <div className="dashboard">
-      {/* Header */}
       <header className="dashboard-header">
         <h1>⛳ Golfys</h1>
-        <p>視覚的なコース攻略とデータ分析を融合させたゴルフスコア管理ツール</p>
+        <p>ゴルフスコア管理・分析ツール</p>
       </header>
 
-      {/* Main Content */}
       <div className="dashboard-container">
-        {/* Stats Summary */}
         <section className="stats-summary">
           <h2>📊 基本統計</h2>
           <div className="stats-grid">
@@ -72,34 +53,21 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* Action Buttons */}
         <section className="action-area">
           <h2>🎯 アクション</h2>
           <div className="button-group">
-            <Link to="/upload" className="btn btn-primary">
-              📸 画像からスコアを登録
-            </Link>
-            <Link to="/manual-score" className="btn btn-secondary">
-              ✍️ スコアを手動入力
-            </Link>
-            <Link to="/courses" className="btn btn-secondary">
-              🏌️ コースを選択して分析
-            </Link>
+            <Link to="/manual-score" className="btn btn-primary">✍️ スコアを手動入力</Link>
+            <Link to="/courses" className="btn btn-secondary">🏌️ コースを選択して分析</Link>
           </div>
         </section>
 
-        {/* Recent Rounds */}
         <section className="recent-rounds">
           <h2>📅 最近のラウンド</h2>
           {rounds.length > 0 ? (
             <>
               <div className="rounds-preview">
                 {rounds.map(round => (
-                  <Link 
-                    key={round.id}
-                    to={`/rounds/${round.id}`} 
-                    className="round-preview-card"
-                  >
+                  <Link key={round.id} to={`/rounds/${round.id}`} className="round-preview-card">
                     <div className="round-preview-info">
                       <h3>{round.course_name || 'Unknown Course'}</h3>
                       <p className="date">{round.play_date}</p>
@@ -108,12 +76,10 @@ const Dashboard = () => {
                   </Link>
                 ))}
               </div>
-              <Link to="/rounds" className="link-more">
-                すべてのラウンドを表示 →
-              </Link>
+              <Link to="/rounds" className="link-more">すべてのラウンドを表示 →</Link>
             </>
           ) : (
-            <p>ラウンドデータがありません</p>
+            <p>ラウンドデータがありません。スコアを登録してください。</p>
           )}
         </section>
       </div>
