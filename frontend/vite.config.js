@@ -22,7 +22,7 @@ function serveHoleImages() {
 }
 
 export default defineConfig({
-  base: '/',
+  base: '/Golf_Analytics/',
   plugins: [
     react({
       // FastRefresh最適化
