@@ -79,6 +79,7 @@ const Dashboard = () => {
       date: new Date(r.play_date).toLocaleDateString('ja-JP'),
       score: r.totalScore,
       putts: r.totalPutts,
+      scoreRest: Math.max(0, r.totalScore - r.totalPutts),
       roundIndex: idx + 1
     }));
   }, [stats]);
@@ -176,11 +177,11 @@ const Dashboard = () => {
                     dataKey="putts" 
                     fill="#f59e0b"
                     stackId="stack1"
-                    radius={[0, 0, 8, 8]}
+                    radius={[0, 0, 0, 0]}
                     label={renderLabel}
                   />
                   <Bar 
-                    dataKey="score" 
+                    dataKey="scoreRest" 
                     fill="#667eea"
                     stackId="stack1"
                     radius={[8, 8, 0, 0]}
