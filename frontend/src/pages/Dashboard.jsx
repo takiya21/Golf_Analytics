@@ -165,8 +165,8 @@ const Dashboard = () => {
                         return (
                           <div style={{ backgroundColor: '#fff', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}>
                             <p style={{ margin: '0', fontSize: '12px' }}>{data.date}</p>
-                            <p style={{ margin: '4px 0 0 0', fontSize: '12px', fontWeight: 'bold' }}>パット: {data.putts}</p>
                             <p style={{ margin: '4px 0 0 0', fontSize: '12px', fontWeight: 'bold' }}>スコア: {data.score}</p>
+                            <p style={{ margin: '4px 0 0 0', fontSize: '12px', fontWeight: 'bold' }}>パット: {data.putts}</p>
                           </div>
                         );
                       }
