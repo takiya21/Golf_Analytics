@@ -90,12 +90,12 @@ const HoleDetail = () => {
     const roundCount = scores.length;
 
     // スコア分類
-    const eagleCount = scores.filter(s => s <= hole.par - 2).length;
-    const birdieCount = scores.filter(s => s === hole.par - 1).length;
+    const birdieOrBetterCount = scores.filter(s => s <= hole.par - 1).length;
     const parCount = scores.filter(s => s === hole.par).length;
     const bogeyCount = scores.filter(s => s === hole.par + 1).length;
-    const tripleBogieCount = scores.filter(s => s === hole.par + 2).length;
-    const extraBogieCount = scores.filter(s => s >= hole.par + 3).length;
+    const doubleBogeyCount = scores.filter(s => s === hole.par + 2).length;
+    const tripleBogeyCount = scores.filter(s => s === hole.par + 3).length;
+    const extraBogeyCount = scores.filter(s => s >= hole.par + 4).length;
 
     // OB, バンカー, ペナルティ集計
     const obCount = holeHistory.reduce((sum, h) => sum + (h.ob_count || 0), 0);
@@ -113,24 +113,24 @@ const HoleDetail = () => {
       return roundCount > 0 ? ((count / roundCount) * 100).toFixed(1) : 0;
     };
 
-    // パーオン率（イーグル + バーディ + パー）
-    const parOnCount = eagleCount + birdieCount + parCount;
+    // パーオン率（バーディ以下 + パー）
+    const parOnCount = birdieOrBetterCount + parCount;
     const parOnRate = calcPercentage(parOnCount);
 
-    // ボギーオン率（ボギー以下）
-    const bogeyOnCount = bogeyCount + tripleBogieCount + extraBogieCount;
+    // ボギーオン率（ボギー + ダブルボギー）
+    const bogeyOnCount = bogeyCount + doubleBogeyCount;
     const bogeyOnRate = calcPercentage(bogeyOnCount);
 
     return {
       bestScore,
       avgScore,
       roundCount,
-      eagle: { count: eagleCount, percentage: calcPercentage(eagleCount) },
-      birdie: { count: birdieCount, percentage: calcPercentage(birdieCount) },
+      birdieOrBetter: { count: birdieOrBetterCount, percentage: calcPercentage(birdieOrBetterCount) },
       par: { count: parCount, percentage: calcPercentage(parCount) },
       bogey: { count: bogeyCount, percentage: calcPercentage(bogeyCount) },
-      tripleBogie: { count: tripleBogieCount, percentage: calcPercentage(tripleBogieCount) },
-      extraBogie: { count: extraBogieCount, percentage: calcPercentage(extraBogieCount) },
+      doubleBogey: { count: doubleBogeyCount, percentage: calcPercentage(doubleBogeyCount) },
+      tripleBogey: { count: tripleBogeyCount, percentage: calcPercentage(tripleBogeyCount) },
+      extraBogey: { count: extraBogeyCount, percentage: calcPercentage(extraBogeyCount) },
       avgPutts,
       totalOB: { count: obCount, percentage: calcPercentage(obCount) },
       totalBunker: { count: bunkerCount, percentage: calcPercentage(bunkerCount) },
@@ -147,12 +147,12 @@ const HoleDetail = () => {
   // スコア分布のグラフデータ
   const scoreDistributionData = useMemo(() => {
     const data = [];
-    if (stats.eagle.count > 0) data.push({ name: 'イーグル', value: stats.eagle.count });
-    if (stats.birdie.count > 0) data.push({ name: 'バーディ', value: stats.birdie.count });
+    if (stats.birdieOrBetter.count > 0) data.push({ name: 'バーディ以下', value: stats.birdieOrBetter.count });
     if (stats.par.count > 0) data.push({ name: 'パー', value: stats.par.count });
     if (stats.bogey.count > 0) data.push({ name: 'ボギー', value: stats.bogey.count });
-    if (stats.tripleBogie.count > 0) data.push({ name: 'トリプル', value: stats.tripleBogie.count });
-    if (stats.extraBogie.count > 0) data.push({ name: '＋４以上', value: stats.extraBogie.count });
+    if (stats.doubleBogey.count > 0) data.push({ name: 'ダブル', value: stats.doubleBogey.count });
+    if (stats.tripleBogey.count > 0) data.push({ name: 'トリプル', value: stats.tripleBogey.count });
+    if (stats.extraBogey.count > 0) data.push({ name: '＋４以上', value: stats.extraBogey.count });
     return data;
   }, [stats]);
 
@@ -310,22 +310,22 @@ const HoleDetail = () => {
                       <table className="stats-table-transposed">
                         <thead>
                           <tr>
-                            <th>イーグル以下</th>
-                            <th>バーディ</th>
+                            <th>バーディ以下</th>
                             <th>パー</th>
                             <th>ボギー</th>
+                            <th>ダブル</th>
                             <th>トリプル</th>
                             <th>＋４以上</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td className="stats-percentage">{stats.eagle.percentage}%</td>
-                            <td className="stats-percentage">{stats.birdie.percentage}%</td>
+                            <td className="stats-percentage">{stats.birdieOrBetter.percentage}%</td>
                             <td className="stats-percentage">{stats.par.percentage}%</td>
                             <td className="stats-percentage">{stats.bogey.percentage}%</td>
-                            <td className="stats-percentage">{stats.tripleBogie.percentage}%</td>
-                            <td className="stats-percentage">{stats.extraBogie.percentage}%</td>
+                            <td className="stats-percentage">{stats.doubleBogey.percentage}%</td>
+                            <td className="stats-percentage">{stats.tripleBogey.percentage}%</td>
+                            <td className="stats-percentage">{stats.extraBogey.percentage}%</td>
                           </tr>
                         </tbody>
                       </table>
