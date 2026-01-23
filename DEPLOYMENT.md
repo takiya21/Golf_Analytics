@@ -23,7 +23,7 @@ https://takiya21.github.io/Golf_Analytics/
 ### クイックデプロイ（推奨）
 
 ```bash
-cd /root/Data/takiya21/Golf_Analytics
+
 ./deploy.sh
 ```
 

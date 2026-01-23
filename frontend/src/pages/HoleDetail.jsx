@@ -62,16 +62,22 @@ const HoleDetail = () => {
         bestScore: '-',
         avgScore: '-',
         roundCount: 0,
-        eagle: 0,
-        birdie: 0,
-        par: 0,
-        bogey: 0,
-        tripleBogie: 0,
-        extraBogie: 0,
+        eagle: { count: 0, percentage: 0 },
+        birdie: { count: 0, percentage: 0 },
+        par: { count: 0, percentage: 0 },
+        bogey: { count: 0, percentage: 0 },
+        tripleBogie: { count: 0, percentage: 0 },
+        extraBogie: { count: 0, percentage: 0 },
         avgPutts: '-',
-        totalOB: 0,
-        totalBunker: 0,
-        totalPenalty: 0
+        totalOB: { count: 0, percentage: 0 },
+        totalBunker: { count: 0, percentage: 0 },
+        totalPenalty: { count: 0, percentage: 0 },
+        parOnRate: 0,
+        bogeyOnRate: 0,
+        fairwayKeptRate: 0,
+        fairwayLeftRate: 0,
+        fairwayRightRate: 0,
+        fairwayShortRate: 0
       };
     }
 
@@ -81,44 +87,72 @@ const HoleDetail = () => {
     const bestScore = Math.min(...scores);
     const avgScore = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
     const avgPutts = (putts.reduce((a, b) => a + b, 0) / putts.length).toFixed(2);
+    const roundCount = scores.length;
 
-    const eagle = scores.filter(s => s <= hole.par - 2).length;
-    const birdie = scores.filter(s => s === hole.par - 1).length;
-    const par = scores.filter(s => s === hole.par).length;
-    const bogey = scores.filter(s => s === hole.par + 1).length;
-    const tripleBogie = scores.filter(s => s === hole.par + 2).length;
-    const extraBogie = scores.filter(s => s >= hole.par + 3).length;
+    // スコア分類
+    const eagleCount = scores.filter(s => s <= hole.par - 2).length;
+    const birdieCount = scores.filter(s => s === hole.par - 1).length;
+    const parCount = scores.filter(s => s === hole.par).length;
+    const bogeyCount = scores.filter(s => s === hole.par + 1).length;
+    const tripleBogieCount = scores.filter(s => s === hole.par + 2).length;
+    const extraBogieCount = scores.filter(s => s >= hole.par + 3).length;
 
-    const totalOB = holeHistory.reduce((sum, h) => sum + (h.ob_count || 0), 0);
-    const totalBunker = holeHistory.reduce((sum, h) => sum + (h.bunker_count || 0), 0);
-    const totalPenalty = holeHistory.reduce((sum, h) => sum + (h.penalty_count || 0), 0);
+    // OB, バンカー, ペナルティ集計
+    const obCount = holeHistory.reduce((sum, h) => sum + (h.ob_count || 0), 0);
+    const bunkerCount = holeHistory.reduce((sum, h) => sum + (h.bunker_count || 0), 0);
+    const penaltyCount = holeHistory.reduce((sum, h) => sum + (h.penalty_count || 0), 0);
+
+    // フェアウェイキープ集計
+    const fairwayKeptCount = holeHistory.filter(h => h.fairway_kept === '〇').length;
+    const fairwayLeftCount = holeHistory.filter(h => h.fairway_kept === '左').length;
+    const fairwayRightCount = holeHistory.filter(h => h.fairway_kept === '右').length;
+    const fairwayShortCount = holeHistory.filter(h => h.fairway_kept === 'ショート').length;
+
+    // 割合計算関数
+    const calcPercentage = (count) => {
+      return roundCount > 0 ? ((count / roundCount) * 100).toFixed(1) : 0;
+    };
+
+    // パーオン率（イーグル + バーディ + パー）
+    const parOnCount = eagleCount + birdieCount + parCount;
+    const parOnRate = calcPercentage(parOnCount);
+
+    // ボギーオン率（ボギー以下）
+    const bogeyOnCount = bogeyCount + tripleBogieCount + extraBogieCount;
+    const bogeyOnRate = calcPercentage(bogeyOnCount);
 
     return {
       bestScore,
       avgScore,
-      roundCount: scores.length,
-      eagle,
-      birdie,
-      par,
-      bogey,
-      tripleBogie,
-      extraBogie,
+      roundCount,
+      eagle: { count: eagleCount, percentage: calcPercentage(eagleCount) },
+      birdie: { count: birdieCount, percentage: calcPercentage(birdieCount) },
+      par: { count: parCount, percentage: calcPercentage(parCount) },
+      bogey: { count: bogeyCount, percentage: calcPercentage(bogeyCount) },
+      tripleBogie: { count: tripleBogieCount, percentage: calcPercentage(tripleBogieCount) },
+      extraBogie: { count: extraBogieCount, percentage: calcPercentage(extraBogieCount) },
       avgPutts,
-      totalOB,
-      totalBunker,
-      totalPenalty
+      totalOB: { count: obCount, percentage: calcPercentage(obCount) },
+      totalBunker: { count: bunkerCount, percentage: calcPercentage(bunkerCount) },
+      totalPenalty: { count: penaltyCount, percentage: calcPercentage(penaltyCount) },
+      parOnRate,
+      bogeyOnRate,
+      fairwayKeptRate: calcPercentage(fairwayKeptCount),
+      fairwayLeftRate: calcPercentage(fairwayLeftCount),
+      fairwayRightRate: calcPercentage(fairwayRightCount),
+      fairwayShortRate: calcPercentage(fairwayShortCount)
     };
   }, [holeHistory, hole.par]);
 
   // スコア分布のグラフデータ
   const scoreDistributionData = useMemo(() => {
     const data = [];
-    if (stats.eagle > 0) data.push({ name: 'イーグル', value: stats.eagle });
-    if (stats.birdie > 0) data.push({ name: 'バーディ', value: stats.birdie });
-    if (stats.par > 0) data.push({ name: 'パー', value: stats.par });
-    if (stats.bogey > 0) data.push({ name: 'ボギー', value: stats.bogey });
-    if (stats.tripleBogie > 0) data.push({ name: 'トリプル', value: stats.tripleBogie });
-    if (stats.extraBogie > 0) data.push({ name: '＋４以上', value: stats.extraBogie });
+    if (stats.eagle.count > 0) data.push({ name: 'イーグル', value: stats.eagle.count });
+    if (stats.birdie.count > 0) data.push({ name: 'バーディ', value: stats.birdie.count });
+    if (stats.par.count > 0) data.push({ name: 'パー', value: stats.par.count });
+    if (stats.bogey.count > 0) data.push({ name: 'ボギー', value: stats.bogey.count });
+    if (stats.tripleBogie.count > 0) data.push({ name: 'トリプル', value: stats.tripleBogie.count });
+    if (stats.extraBogie.count > 0) data.push({ name: '＋４以上', value: stats.extraBogie.count });
     return data;
   }, [stats]);
 
@@ -248,50 +282,102 @@ const HoleDetail = () => {
           {/* 統計セクション */}
           <section className="stats-section">
             <h2>📊 成績統計</h2>
-            <div className="stats-grid">
-              <div className="stat-box">
-                <div className="stat-label">ベストスコア</div>
-                <div className="stat-value">{stats.bestScore}</div>
+            <div className="stats-table-wrapper">
+              <div className="stats-summary-row">
+                <div className="stats-summary-item">
+                  <span className="stats-summary-label">ベストスコア</span>
+                  <span className="stats-summary-value">{stats.bestScore}</span>
+                </div>
+                <div className="stats-summary-item">
+                  <span className="stats-summary-label">平均スコア</span>
+                  <span className="stats-summary-value">{stats.avgScore}</span>
+                </div>
+                <div className="stats-summary-item">
+                  <span className="stats-summary-label">平均パット</span>
+                  <span className="stats-summary-value">{stats.avgPutts}</span>
+                </div>
+                <div className="stats-summary-item">
+                  <span className="stats-summary-label">ラウンド数</span>
+                  <span className="stats-summary-value">{stats.roundCount}</span>
+                </div>
               </div>
-              <div className="stat-box">
-                <div className="stat-label">平均スコア</div>
-                <div className="stat-value">{stats.avgScore}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">平均パット</div>
-                <div className="stat-value">{stats.avgPutts}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">ラウンド数</div>
-                <div className="stat-value">{stats.roundCount}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">イーグル</div>
-                <div className="stat-value">{stats.eagle}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">バーディ</div>
-                <div className="stat-value">{stats.birdie}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">パー</div>
-                <div className="stat-value">{stats.par}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">ボギー</div>
-                <div className="stat-value">{stats.bogey}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">OB数</div>
-                <div className="stat-value">{stats.totalOB}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">バンカー数</div>
-                <div className="stat-value">{stats.totalBunker}</div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">ペナルティ</div>
-                <div className="stat-value">{stats.totalPenalty}</div>
+
+              <div className="stats-transposed-container">
+                {stats.roundCount > 0 && (
+                  <>
+                    <div className="stats-transposed-section">
+                      <h3>スコア別成績</h3>
+                      <table className="stats-table-transposed">
+                        <thead>
+                          <tr>
+                            <th>イーグル以下</th>
+                            <th>バーディ</th>
+                            <th>パー</th>
+                            <th>ボギー</th>
+                            <th>トリプル</th>
+                            <th>＋４以上</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td className="stats-percentage">{stats.eagle.percentage}%</td>
+                            <td className="stats-percentage">{stats.birdie.percentage}%</td>
+                            <td className="stats-percentage">{stats.par.percentage}%</td>
+                            <td className="stats-percentage">{stats.bogey.percentage}%</td>
+                            <td className="stats-percentage">{stats.tripleBogie.percentage}%</td>
+                            <td className="stats-percentage">{stats.extraBogie.percentage}%</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="stats-transposed-section">
+                      <h3>成績統計</h3>
+                      <table className="stats-table-transposed">
+                        <thead>
+                          <tr>
+                            <th>パーオン率</th>
+                            <th>ボギーオン率</th>
+                            <th>OB</th>
+                            <th>バンカー</th>
+                            <th>ペナルティ</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td className="stats-percentage">{stats.parOnRate}%</td>
+                            <td className="stats-percentage">{stats.bogeyOnRate}%</td>
+                            <td className="stats-percentage">{stats.totalOB.percentage}%</td>
+                            <td className="stats-percentage">{stats.totalBunker.percentage}%</td>
+                            <td className="stats-percentage">{stats.totalPenalty.percentage}%</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="stats-transposed-section">
+                      <h3>FW統計</h3>
+                      <table className="stats-table-transposed">
+                        <thead>
+                          <tr>
+                            <th>FWキープ</th>
+                            <th>左</th>
+                            <th>右</th>
+                            <th>ショート</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td className="stats-percentage">{stats.fairwayKeptRate}%</td>
+                            <td className="stats-percentage">{stats.fairwayLeftRate}%</td>
+                            <td className="stats-percentage">{stats.fairwayRightRate}%</td>
+                            <td className="stats-percentage">{stats.fairwayShortRate}%</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </section>
