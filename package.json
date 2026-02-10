@@ -26,5 +26,8 @@
     "management"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@react-google-maps/api": "^2.20.8"
+  }
 }
