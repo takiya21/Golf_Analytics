@@ -4,25 +4,32 @@ import fs from 'fs'
 import path from 'path'
 
 // hole_img フォルダを配信するカスタムミドルウェア
+// base が /Golf_Analytics/ のため、リクエストパスは /Golf_Analytics/hole_img/... となる
 function serveHoleImages() {
   return {
     name: 'serve-hole-images',
     configureServer(server) {
-      server.middlewares.use('/hole_img', (req, res, next) => {
+      // base 付きパス（/Golf_Analytics/hole_img）と base 無しパス（/hole_img）の両方に対応
+      const handler = (req, res, next) => {
         const filePath = path.join(__dirname, '..', 'hole_img', req.url)
         if (fs.existsSync(filePath)) {
           res.setHeader('Content-Type', 'image/webp')
+          res.setHeader('Cache-Control', 'public, max-age=86400')
           res.end(fs.readFileSync(filePath))
         } else {
           next()
         }
-      })
+      }
+      server.middlewares.use('/Golf_Analytics/hole_img', handler)
+      server.middlewares.use('/hole_img', handler)
     }
   }
 }
 
 export default defineConfig({
   base: '/Golf_Analytics/',
+  // Golf_Analytics/.env から VITE_ 環境変数を読み込む
+  envDir: path.resolve(__dirname, '..'),
   plugins: [
     react({
       // FastRefresh最適化

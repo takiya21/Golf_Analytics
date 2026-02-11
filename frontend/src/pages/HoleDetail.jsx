@@ -1,7 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import GpsNavigation from '../components/GpsNavigation';
+import GreenDetailPopup from '../components/GreenDetailPopup';
 import '../styles/holeDetail.css';
+import '../styles/gpsNavigation.css';
 
 const HoleDetail = () => {
   const navigate = useNavigate();
@@ -57,7 +60,7 @@ const HoleDetail = () => {
 
   // 統計データの計算
   const stats = useMemo(() => {
-    if (holeHistory.length === 0) {
+    if (!hole || holeHistory.length === 0) {
       return {
         bestScore: '-',
         avgScore: '-',
@@ -77,10 +80,15 @@ const HoleDetail = () => {
         fairwayKeptRate: 0,
         fairwayLeftRate: 0,
         fairwayRightRate: 0,
-        fairwayShortRate: 0
+        fairwayShortRate: 0,
+        birdieOrBetter: { count: 0, percentage: 0 },
+        doubleBogey: { count: 0, percentage: 0 },
+        tripleBogey: { count: 0, percentage: 0 },
+        extraBogey: { count: 0, percentage: 0 }
       };
     }
 
+    const holePar = hole.par;
     const scores = holeHistory.map(h => h.score);
     const putts = holeHistory.map(h => h.putts);
 
@@ -90,12 +98,12 @@ const HoleDetail = () => {
     const roundCount = scores.length;
 
     // スコア分類
-    const birdieOrBetterCount = scores.filter(s => s <= hole.par - 1).length;
-    const parCount = scores.filter(s => s === hole.par).length;
-    const bogeyCount = scores.filter(s => s === hole.par + 1).length;
-    const doubleBogeyCount = scores.filter(s => s === hole.par + 2).length;
-    const tripleBogeyCount = scores.filter(s => s === hole.par + 3).length;
-    const extraBogeyCount = scores.filter(s => s >= hole.par + 4).length;
+    const birdieOrBetterCount = scores.filter(s => s <= holePar - 1).length;
+    const parCount = scores.filter(s => s === holePar).length;
+    const bogeyCount = scores.filter(s => s === holePar + 1).length;
+    const doubleBogeyCount = scores.filter(s => s === holePar + 2).length;
+    const tripleBogeyCount = scores.filter(s => s === holePar + 3).length;
+    const extraBogeyCount = scores.filter(s => s >= holePar + 4).length;
 
     // OB, バンカー, ペナルティ集計
     const obCount = holeHistory.reduce((sum, h) => sum + (h.ob_count || 0), 0);
@@ -142,7 +150,7 @@ const HoleDetail = () => {
       fairwayRightRate: calcPercentage(fairwayRightCount),
       fairwayShortRate: calcPercentage(fairwayShortCount)
     };
-  }, [holeHistory, hole.par]);
+  }, [holeHistory, hole]);
 
   // スコア分布のグラフデータ
   const scoreDistributionData = useMemo(() => {
@@ -175,6 +183,14 @@ const HoleDetail = () => {
     bunker_count: 0,
     penalty_count: 0
   });
+
+  // グリーン攻略図ポップアップ状態
+  const [isGreenPopupOpen, setIsGreenPopupOpen] = useState(false);
+  const handleGreenTap = useCallback(() => setIsGreenPopupOpen(true), []);
+  const handleGreenClose = useCallback(() => setIsGreenPopupOpen(false), []);
+
+  // タブ切り替え状態
+  const [activeTab, setActiveTab] = useState('map');
 
   const clubs = ['ドライバー', '3W', '5W', '4U', '5U', '6U', '2I', '3I', '4I', '5I', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'パター'];
   const fwKeepOptions = ['〇', '左', '右', 'ショート'];
@@ -260,28 +276,90 @@ const HoleDetail = () => {
   const nextHole = hole.hole_number < 18 ? hole.hole_number + 1 : null;
 
   return (
-    <div className="hole-detail-page">
+    <div className="hole-detail-page hole-detail-tabbed">
       <div className="hole-detail-container">
-        {/* ホール画像セクション */}
-        <div className="hole-image-section">
-          <img src={hole.image} alt={`Hole ${hole.hole_number}`} className="hole-image-large" />
-          <div className="hole-info-overlay hole-info-top">
-            <h1>{courseData.name}</h1>
-          </div>
-          <div className="hole-info-overlay hole-info-bottom">
-            <h2>Hole {hole.hole_number}</h2>
-            <div className="hole-specs">
-              <span>Par {hole.par}</span>
-              <span>{hole.yardage} yards</span>
-            </div>
-          </div>
-        </div>
 
-        {/* メインコンテンツ */}
-        <div className="hole-content">
-          {/* 統計セクション */}
-          <section className="stats-section">
-            <h2>📊 成績統計</h2>
+        {/* ===== コースマップ タブ ===== */}
+        {activeTab === 'map' && (
+          <>
+            <GpsNavigation
+              holeNumber={hole.hole_number}
+              par={hole.par}
+              yardage={hole.yardage}
+              onGreenTap={handleGreenTap}
+            />
+
+            {/* スコア詳細カード */}
+            <div className="hole-score-summary-card">
+              <div className="hole-score-summary-header">
+                <span className="hole-score-summary-title">Hole {hole.hole_number}</span>
+                <span className="hole-score-summary-par">Par {hole.par} / {hole.yardage}yd</span>
+              </div>
+              {stats.roundCount > 0 ? (
+                <div className="hole-score-summary-stats">
+                  <div className="hole-score-mini-stat">
+                    <span className="mini-stat-value">{stats.bestScore}</span>
+                    <span className="mini-stat-label">ベスト</span>
+                  </div>
+                  <div className="hole-score-mini-stat">
+                    <span className="mini-stat-value">{stats.avgScore}</span>
+                    <span className="mini-stat-label">平均</span>
+                  </div>
+                  <div className="hole-score-mini-stat">
+                    <span className="mini-stat-value">{stats.avgPutts}</span>
+                    <span className="mini-stat-label">Avg パット</span>
+                  </div>
+                  <div className="hole-score-mini-stat">
+                    <span className="mini-stat-value">{stats.roundCount}</span>
+                    <span className="mini-stat-label">ラウンド</span>
+                  </div>
+                </div>
+              ) : (
+                <p className="hole-score-summary-empty">まだスコアデータがありません</p>
+              )}
+              <button
+                className="hole-score-detail-btn"
+                onClick={() => setActiveTab('score')}
+              >
+                📊 スコア詳細を見る
+              </button>
+            </div>
+
+            {/* ホールナビゲーション */}
+            <div className="navigation-buttons">
+              {prevHole && (
+                <button className="btn btn-secondary" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${prevHole}`; }}>
+                  ← Hole {prevHole}
+                </button>
+              )}
+              <button className="btn btn-tertiary" onClick={() => navigate('/courses')}>
+                コース一覧
+              </button>
+              {nextHole && (
+                <button className="btn btn-secondary" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${nextHole}`; }}>
+                  Hole {nextHole} →
+                </button>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* ===== スコア入力 タブ ===== */}
+        {activeTab === 'score' && (
+          <div className="hole-content">
+            {/* コースマップへ戻るボタン */}
+            <div className="tab-switch-banner">
+              <button
+                className="tab-switch-btn to-map"
+                onClick={() => window.location.reload()}
+              >
+                🗺️ コースマップを見る
+              </button>
+            </div>
+
+            {/* 統計セクション */}
+            <section className="stats-section">
+              <h2>📊 成績統計</h2>
             <div className="stats-table-wrapper">
               <div className="stats-summary-row">
                 <div className="stats-summary-item">
@@ -594,24 +672,57 @@ const HoleDetail = () => {
             </section>
           )}
 
-          {/* ナビゲーションボタン */}
+          {/* ホールナビゲーション */}
           <div className="navigation-buttons">
             {prevHole && (
-              <button className="btn btn-secondary" onClick={() => navigate(`/hole/${prevHole}`)}>
+              <button className="btn btn-secondary" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${prevHole}`; }}>
                 ← Hole {prevHole}
               </button>
             )}
             <button className="btn btn-tertiary" onClick={() => navigate('/courses')}>
-              コース一覧に戻る
+              コース一覧
             </button>
             {nextHole && (
-              <button className="btn btn-secondary" onClick={() => navigate(`/hole/${nextHole}`)}>
+              <button className="btn btn-secondary" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${nextHole}`; }}>
                 Hole {nextHole} →
               </button>
             )}
           </div>
-        </div>
+          </div>
+        )}
+
       </div>
+
+      {/* ===== 下部タブバー ===== */}
+      <div className="hole-tab-bar">
+        <button
+          className={`hole-tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+          onClick={() => {
+            if (activeTab !== 'map') {
+              window.location.reload();
+            }
+          }}
+        >
+          <span className="hole-tab-icon">🗺️</span>
+          <span className="hole-tab-label">コースマップ</span>
+        </button>
+        <button
+          className={`hole-tab-btn ${activeTab === 'score' ? 'active' : ''}`}
+          onClick={() => setActiveTab('score')}
+        >
+          <span className="hole-tab-icon">📝</span>
+          <span className="hole-tab-label">スコア入力</span>
+        </button>
+      </div>
+
+      {/* グリーン攻略図ポップアップ */}
+      <GreenDetailPopup
+        holeNumber={hole.hole_number}
+        par={hole.par}
+        yardage={hole.yardage}
+        isOpen={isGreenPopupOpen}
+        onClose={handleGreenClose}
+      />
     </div>
   );
 };

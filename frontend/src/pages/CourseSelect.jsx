@@ -38,7 +38,7 @@ const CourseSelect = () => {
           <div 
             key={hole.hole_number} 
             className="hole-card" 
-            onClick={() => navigate(`/hole/${hole.hole_number}`)}
+            onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${hole.hole_number}`; }}
           >
             <div className="hole-card-image">
               <img src={hole.image} alt={`Hole ${hole.hole_number}`} />

@@ -200,6 +200,7 @@ const Dashboard = () => {
           <h2>🎯 アクション</h2>
           <div className="button-group">
             <Link to="/manual-score" className="btn btn-primary">✍️ スコアを手動入力</Link>
+            <Link to="/analysis" className="btn btn-primary">📊 スコア分析</Link>
             <Link to="/courses" className="btn btn-secondary">🏌️ コースを選択して分析</Link>
           </div>
         </section>

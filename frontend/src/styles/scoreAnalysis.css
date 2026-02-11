@@ -1,0 +1,313 @@
+/* ===== スコア分析ページ ===== */
+.score-analysis-page {
+  padding: 1.5rem 0 3rem;
+}
+
+.score-analysis-page > h1 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+/* --- Empty state --- */
+.analysis-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.analysis-empty p {
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+.analysis-empty .btn {
+  margin-top: 1.5rem;
+}
+
+/* ===== Section ===== */
+.analysis-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.analysis-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #444;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+/* ===== サマリーカード ===== */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  border-radius: 10px;
+  text-align: center;
+}
+.summary-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 4px;
+}
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.accent-green  { background: rgba(46,125,50,0.08);  color: #2e7d32; }
+.accent-blue   { background: rgba(102,126,234,0.1);  color: #667eea; }
+.accent-orange { background: rgba(245,158,11,0.1);   color: #d97706; }
+.accent-purple { background: rgba(118,75,162,0.1);   color: #764ba2; }
+.accent-teal   { background: rgba(78,205,196,0.1);   color: #0d9488; }
+.accent-red    { background: rgba(239,68,68,0.1);    color: #dc2626; }
+
+/* ===== OUT / IN 比較 ===== */
+.out-in-compare {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.out-in-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.2rem 0.5rem;
+}
+.out-in-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #555;
+}
+.out-in-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #333;
+  margin: 4px 0;
+}
+.out-in-par {
+  font-size: 0.75rem;
+  color: #999;
+}
+.out-in-divider {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #bbb;
+}
+
+/* ===== Chart wrapper ===== */
+.chart-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+.pie-wrapper {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* ===== Distribution row ===== */
+.distribution-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.distribution-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  justify-content: center;
+}
+.dist-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #555;
+}
+.dist-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ===== Par Group Cards ===== */
+.par-group-cards {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.par-group-card {
+  flex: 1;
+  max-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1rem 0.5rem;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+.par-group-card.weak {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+.par-group-card.strong {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+.pg-par {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #555;
+}
+.pg-avg {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #333;
+  margin: 4px 0;
+}
+.par-group-card.weak .pg-avg { color: #dc2626; }
+.par-group-card.strong .pg-avg { color: #16a34a; }
+.pg-count {
+  font-size: 0.7rem;
+  color: #999;
+}
+
+/* ===== Hole Ranking ===== */
+.hole-ranking-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.ranking-col h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.4rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.ranking-item:hover {
+  filter: brightness(0.96);
+}
+.ranking-item.worst {
+  background: #fef2f2;
+}
+.ranking-item.best {
+  background: #f0fdf4;
+}
+.rank {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #999;
+  width: 24px;
+}
+.rank-hole {
+  font-weight: 700;
+  font-size: 0.85rem;
+  min-width: 50px;
+}
+.rank-info {
+  font-size: 0.72rem;
+  color: #777;
+  flex: 1;
+}
+.rank-diff {
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.ranking-item.worst .rank-diff { color: #dc2626; }
+.ranking-item.best .rank-diff { color: #16a34a; }
+
+/* ===== Trouble Cards ===== */
+.trouble-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+.trouble-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  border-radius: 10px;
+  text-align: center;
+}
+.trouble-card.ob      { background: #fef2f2; }
+.trouble-card.bunker  { background: #fffbeb; }
+.trouble-card.penalty { background: #fefce8; }
+
+.trouble-icon {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+.trouble-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+}
+.trouble-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #333;
+  margin: 2px 0;
+}
+.trouble-avg {
+  font-size: 0.7rem;
+  color: #999;
+}
+
+/* ===== Navigation ===== */
+.analysis-nav {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+.analysis-nav .btn {
+  flex: 1;
+  max-width: 200px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hole-ranking-row {
+    grid-template-columns: 1fr;
+  }
+  .trouble-cards {
+    grid-template-columns: 1fr;
+  }
+  .ranking-item {
+    font-size: 0.82rem;
+  }
+}
