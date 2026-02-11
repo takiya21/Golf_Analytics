@@ -12,114 +12,114 @@ export const COURSE_CENTER = {
   lng: 137.5640,
 };
 
-export const COURSE_ZOOM = 16;
+export const COURSE_ZOOM = 25;
 
 export const HOLE_COORDINATES = {
   1: {
-    tee:   { lat: 34.80600, lng: 137.56200 },
-    green: { lat: 34.80250, lng: 137.56250 },
-    greenZoom: 19,
+    tee:   { lat: 34.886250, lng: 137.670391 },
+    green: { lat: 34.882952, lng: 137.669424 },
+    greenZoom: 20,
     fairwayAngle: 170, // 南向き
   },
   2: {
-    tee:   { lat: 34.80200, lng: 137.56300 },
-    green: { lat: 34.80000, lng: 137.56450 },
+    tee:   { lat: 34.882775, lng: 137.668139 },
+    green: { lat: 34.880926, lng: 137.666173 },
     greenZoom: 19,
     fairwayAngle: 155,
   },
   3: {
-    tee:   { lat: 34.79950, lng: 137.56500 },
-    green: { lat: 34.79850, lng: 137.56650 },
+    tee:   { lat: 34.880425, lng: 137.667115 },
+    green: { lat: 34.879133, lng: 137.666174 },
     greenZoom: 20,
     fairwayAngle: 135,
   },
   4: {
-    tee:   { lat: 34.79800, lng: 137.56700 },
-    green: { lat: 34.79400, lng: 137.56800 },
+    tee:   { lat: 34.879417, lng: 137.665466 },
+    green: { lat: 34.882714, lng: 137.666136 },
     greenZoom: 19,
     fairwayAngle: 175,
   },
   5: {
-    tee:   { lat: 34.79350, lng: 137.56850 },
-    green: { lat: 34.79000, lng: 137.56600 },
+    tee:   { lat: 34.882725, lng: 137.666936 },
+    green: { lat: 34.885562, lng: 137.668971 },
     greenZoom: 18,
     fairwayAngle: 210,
   },
   6: {
-    tee:   { lat: 34.78950, lng: 137.56550 },
-    green: { lat: 34.78700, lng: 137.56400 },
+    tee:   { lat: 34.885920, lng: 137.669686 },
+    green: { lat: 34.883245, lng: 137.668583 },
     greenZoom: 19,
     fairwayAngle: 200,
   },
   7: {
-    tee:   { lat: 34.78650, lng: 137.56350 },
-    green: { lat: 34.78550, lng: 137.56200 },
+    tee:   { lat: 34.882770, lng: 137.668125 },
+    green: { lat: 34.880936, lng: 137.666169 },
     greenZoom: 20,
     fairwayAngle: 225,
   },
   8: {
-    tee:   { lat: 34.78500, lng: 137.56150 },
-    green: { lat: 34.78200, lng: 137.56000 },
+    tee:   { lat: 34.880538, lng: 137.667315 },
+    green: { lat: 34.882737, lng: 137.670087 },
     greenZoom: 19,
     fairwayAngle: 195,
   },
   9: {
-    tee:   { lat: 34.78150, lng: 137.55950 },
-    green: { lat: 34.77800, lng: 137.56150 },
+    tee:   { lat: 34.882986, lng: 137.670762 },
+    green: { lat: 34.886745, lng: 137.671023 },
     greenZoom: 18,
     fairwayAngle: 160,
   },
   10: {
-    tee:   { lat: 34.77850, lng: 137.56200 },
-    green: { lat: 34.77550, lng: 137.56400 },
+    tee:   { lat: 34.887716, lng: 137.671958 },
+    green: { lat: 34.887835, lng: 137.676451 },
     greenZoom: 19,
     fairwayAngle: 155,
   },
   11: {
-    tee:   { lat: 34.77600, lng: 137.56450 },
-    green: { lat: 34.77500, lng: 137.56600 },
+    tee:   { lat: 34.889070, lng: 137.676383 },
+    green: { lat: 34.887812, lng: 137.676443 },
     greenZoom: 20,
     fairwayAngle: 140,
   },
   12: {
-    tee:   { lat: 34.77550, lng: 137.56650 },
-    green: { lat: 34.77950, lng: 137.56800 },
+    tee:   { lat: 34.886842, lng: 137.676274 },
+    green: { lat: 34.883361, lng: 137.678116 },
     greenZoom: 18,
     fairwayAngle: 15,
   },
   13: {
-    tee:   { lat: 34.78000, lng: 137.56850 },
-    green: { lat: 34.78400, lng: 137.56700 },
+    tee:   { lat: 34.882810, lng: 137.677662 },
+    green: { lat: 34.886022, lng: 137.675932 },
     greenZoom: 19,
     fairwayAngle: 345,
   },
   14: {
-    tee:   { lat: 34.78450, lng: 137.56650 },
-    green: { lat: 34.78700, lng: 137.56500 },
+    tee:   { lat: 34.885713, lng: 137.675548 },
+    green: { lat: 34.883287, lng: 137.675414 },
     greenZoom: 19,
     fairwayAngle: 335,
   },
   15: {
-    tee:   { lat: 34.78750, lng: 137.56450 },
-    green: { lat: 34.79050, lng: 137.56300 },
+    tee:   { lat: 34.882812, lng: 137.675177 },
+    green: { lat: 34.885664, lng: 137.674579 },
     greenZoom: 19,
     fairwayAngle: 340,
   },
   16: {
-    tee:   { lat: 34.79100, lng: 137.56250 },
-    green: { lat: 34.79200, lng: 137.56100 },
+    tee:   { lat: 34.885552, lng: 137.673907 },
+    green: { lat: 34.884261, lng: 137.672812 },
     greenZoom: 20,
     fairwayAngle: 330,
   },
   17: {
-    tee:   { lat: 34.79250, lng: 137.56050 },
-    green: { lat: 34.79650, lng: 137.55900 },
+    tee:   { lat: 34.884039, lng: 137.672015 },
+    green: { lat: 34.886712, lng: 137.675577 },
     greenZoom: 18,
     fairwayAngle: 345,
   },
   18: {
-    tee:   { lat: 34.79700, lng: 137.55850 },
-    green: { lat: 34.80050, lng: 137.56100 },
+    tee:   { lat: 34.887264, lng: 137.675254 },
+    green: { lat: 34.887131, lng: 137.671447 },
     greenZoom: 19,
     fairwayAngle: 25,
   },
@@ -146,4 +146,19 @@ export function calcDistanceMeters(lat1, lng1, lat2, lng2) {
  */
 export function metersToYards(m) {
   return Math.round(m * 1.09361);
+}
+
+/**
+ * 2点間の方位角（bearing）を度数で計算
+ * 北=0°, 東=90°, 南=180°, 西=270°
+ */
+export function calcBearing(lat1, lng1, lat2, lng2) {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const toDeg = (rad) => (rad * 180) / Math.PI;
+  const dLng = toRad(lng2 - lng1);
+  const y = Math.sin(dLng) * Math.cos(toRad(lat2));
+  const x =
+    Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) -
+    Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(dLng);
+  return (toDeg(Math.atan2(y, x)) + 360) % 360;
 }

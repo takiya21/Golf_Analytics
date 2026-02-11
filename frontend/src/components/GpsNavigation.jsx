@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { GoogleMap, Marker, Circle, OverlayView, Polyline } from '@react-google-maps/api';
-import { HOLE_COORDINATES, calcDistanceMeters, metersToYards } from '../data/courseCoordinates';
+import { HOLE_COORDINATES, calcDistanceMeters, metersToYards, calcBearing } from '../data/courseCoordinates';
 import { GoogleMapsContext } from '../App';
 
 const MAP_CONTAINER_STYLE = {
@@ -17,6 +17,7 @@ const MAP_OPTIONS = {
   fullscreenControl: true,
   gestureHandling: 'greedy',
   tilt: 0,
+  minZoom: 5,
 };
 
 // マーカーアイコン定義
@@ -114,6 +115,8 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap }) => {
 
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
+    // ズームアウト制限を確実に適用
+    map.setOptions({ minZoom: 5 });
   }, []);
 
   // マップのズームレベルを計算
@@ -130,6 +133,14 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap }) => {
   const fairwayPath = holeCoords
     ? [holeCoords.tee, holeCoords.green]
     : [];
+
+  // ティー→グリーン方位角を heading に設定し、グリーンが画面上部に来るようにする
+  const mapHeading = holeCoords
+    ? calcBearing(
+        holeCoords.tee.lat, holeCoords.tee.lng,
+        holeCoords.green.lat, holeCoords.green.lng
+      )
+    : 0;
 
   // --- Google Maps API キーが無い場合のフォールバック ---
   if (!hasValidKey) {
@@ -252,7 +263,7 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap }) => {
           mapContainerStyle={MAP_CONTAINER_STYLE}
           center={mapCenter}
           zoom={getZoomLevel()}
-          options={MAP_OPTIONS}
+          options={{ ...MAP_OPTIONS, heading: mapHeading }}
           onLoad={onMapLoad}
         >
           {/* フェアウェイライン（ティー→グリーン） */}
@@ -336,10 +347,10 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap }) => {
             </>
           )}
 
-          {/* 現在地→グリーン距離ライン */}
-          {currentPos && holeCoords && (
+          {/* ティー→グリーン距離ライン */}
+          {holeCoords && (
             <Polyline
-              path={[currentPos, holeCoords.green]}
+              path={[holeCoords.tee, holeCoords.green]}
               options={{
                 strokeColor: '#4285F4',
                 strokeOpacity: 0.8,
@@ -353,20 +364,14 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap }) => {
 
       {/* 距離パネル */}
       <div className="gps-distance-panel">
-        {distanceToGreen !== null ? (
-          <>
-            <div className="gps-distance-item gps-distance-green">
-              <span className="gps-distance-label">🏁 グリーンまで</span>
-              <span className="gps-distance-value">{distanceToGreen} yd</span>
-            </div>
-            <div className="gps-distance-item gps-distance-tee">
-              <span className="gps-distance-label">🏌️ ティーまで</span>
-              <span className="gps-distance-value">{distanceToTee} yd</span>
-            </div>
-          </>
-        ) : (
-          <div className="gps-distance-item gps-waiting">
-            <span>{gpsError || '📡 GPS信号を取得中...'}</span>
+        <div className="gps-distance-item gps-distance-green">
+          <span className="gps-distance-label">🏁 ティー→グリーン</span>
+          <span className="gps-distance-value">{yardage} yd</span>
+        </div>
+        {distanceToGreen !== null && (
+          <div className="gps-distance-item gps-distance-tee">
+            <span className="gps-distance-label">📍 現在地→グリーン</span>
+            <span className="gps-distance-value">{distanceToGreen} yd</span>
           </div>
         )}
       </div>

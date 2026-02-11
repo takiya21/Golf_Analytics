@@ -426,6 +426,44 @@
   flex-wrap: wrap;
 }
 
+/* マップ上部ナビゲーション */
+.navigation-buttons.map-top-nav {
+  border-top: none;
+  border-bottom: none;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  justify-content: space-between;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
+}
+
+.navigation-buttons.map-top-nav .btn {
+  min-width: auto;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+.navigation-buttons.map-top-nav .btn-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navigation-buttons.map-top-nav .btn-secondary:active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.navigation-buttons.map-top-nav .btn-tertiary {
+  background: rgba(78, 205, 196, 0.15);
+  color: #4ecdc4;
+  border: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+.navigation-buttons.map-top-nav .btn-tertiary:active {
+  background: rgba(78, 205, 196, 0.3);
+}
+
 .navigation-buttons .btn {
   min-width: 150px;
 }

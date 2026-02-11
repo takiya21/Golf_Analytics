@@ -282,6 +282,23 @@ const HoleDetail = () => {
         {/* ===== コースマップ タブ ===== */}
         {activeTab === 'map' && (
           <>
+            {/* ホールナビゲーション（マップ上部） */}
+            <div className="navigation-buttons map-top-nav">
+              {prevHole ? (
+                <button className="btn btn-secondary" onClick={() => navigate(`/hole/${prevHole}`)}>
+                  ← Hole {prevHole}
+                </button>
+              ) : <span />}
+              <button className="btn btn-tertiary" onClick={() => navigate('/courses')}>
+                コース一覧
+              </button>
+              {nextHole ? (
+                <button className="btn btn-secondary" onClick={() => navigate(`/hole/${nextHole}`)}>
+                  Hole {nextHole} →
+                </button>
+              ) : <span />}
+            </div>
+
             <GpsNavigation
               holeNumber={hole.hole_number}
               par={hole.par}
@@ -323,23 +340,6 @@ const HoleDetail = () => {
               >
                 📊 スコア詳細を見る
               </button>
-            </div>
-
-            {/* ホールナビゲーション */}
-            <div className="navigation-buttons">
-              {prevHole && (
-                <button className="btn btn-secondary" onClick={() => navigate(`/hole/${prevHole}`)}>
-                  ← Hole {prevHole}
-                </button>
-              )}
-              <button className="btn btn-tertiary" onClick={() => navigate('/courses')}>
-                コース一覧
-              </button>
-              {nextHole && (
-                <button className="btn btn-secondary" onClick={() => navigate(`/hole/${nextHole}`)}>
-                  Hole {nextHole} →
-                </button>
-              )}
             </div>
           </>
         )}
