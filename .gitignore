@@ -8,6 +8,7 @@ node_modules/
 # ビルド成果物
 dist/
 dist-ssr/
+docs/
 *.local
 
 # 環境変数（ここが一番重要！）
