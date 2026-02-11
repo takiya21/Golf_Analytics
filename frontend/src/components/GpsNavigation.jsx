@@ -116,8 +116,12 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap }) => {
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
     // ズームアウト制限を確実に適用
-    map.setOptions({ minZoom: 5 });
-  }, []);
+    map.setOptions({ minZoom: 15 });
+    // fairwayAngle でグリーンが画面上部に来るよう heading を適用
+    if (holeCoords && holeCoords.fairwayAngle != null) {
+      map.setHeading(holeCoords.fairwayAngle);
+    }
+  }, [holeCoords]);
 
   // マップのズームレベルを計算
   const getZoomLevel = () => {
@@ -134,13 +138,8 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap }) => {
     ? [holeCoords.tee, holeCoords.green]
     : [];
 
-  // ティー→グリーン方位角を heading に設定し、グリーンが画面上部に来るようにする
-  const mapHeading = holeCoords
-    ? calcBearing(
-        holeCoords.tee.lat, holeCoords.tee.lng,
-        holeCoords.green.lat, holeCoords.green.lng
-      )
-    : 0;
+  // fairwayAngle を heading に設定し、グリーンが画面上部に来るようにする
+  const mapHeading = holeCoords?.fairwayAngle ?? 0;
 
   // --- Google Maps API キーが無い場合のフォールバック ---
   if (!hasValidKey) {
