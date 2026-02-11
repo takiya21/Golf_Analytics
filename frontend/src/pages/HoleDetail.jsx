@@ -328,7 +328,7 @@ const HoleDetail = () => {
             {/* ホールナビゲーション */}
             <div className="navigation-buttons">
               {prevHole && (
-                <button className="btn btn-secondary" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${prevHole}`; }}>
+                <button className="btn btn-secondary" onClick={() => navigate(`/hole/${prevHole}`)}>
                   ← Hole {prevHole}
                 </button>
               )}
@@ -336,7 +336,7 @@ const HoleDetail = () => {
                 コース一覧
               </button>
               {nextHole && (
-                <button className="btn btn-secondary" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${nextHole}`; }}>
+                <button className="btn btn-secondary" onClick={() => navigate(`/hole/${nextHole}`)}>
                   Hole {nextHole} →
                 </button>
               )}
@@ -351,7 +351,7 @@ const HoleDetail = () => {
             <div className="tab-switch-banner">
               <button
                 className="tab-switch-btn to-map"
-                onClick={() => window.location.reload()}
+                onClick={() => setActiveTab('map')}
               >
                 🗺️ コースマップを見る
               </button>
@@ -675,7 +675,7 @@ const HoleDetail = () => {
           {/* ホールナビゲーション */}
           <div className="navigation-buttons">
             {prevHole && (
-              <button className="btn btn-secondary" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${prevHole}`; }}>
+              <button className="btn btn-secondary" onClick={() => navigate(`/hole/${prevHole}`)}>
                 ← Hole {prevHole}
               </button>
             )}
@@ -683,7 +683,7 @@ const HoleDetail = () => {
               コース一覧
             </button>
             {nextHole && (
-              <button className="btn btn-secondary" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${nextHole}`; }}>
+              <button className="btn btn-secondary" onClick={() => navigate(`/hole/${nextHole}`)}>
                 Hole {nextHole} →
               </button>
             )}
@@ -697,11 +697,7 @@ const HoleDetail = () => {
       <div className="hole-tab-bar">
         <button
           className={`hole-tab-btn ${activeTab === 'map' ? 'active' : ''}`}
-          onClick={() => {
-            if (activeTab !== 'map') {
-              window.location.reload();
-            }
-          }}
+          onClick={() => setActiveTab('map')}
         >
           <span className="hole-tab-icon">🗺️</span>
           <span className="hole-tab-label">コースマップ</span>

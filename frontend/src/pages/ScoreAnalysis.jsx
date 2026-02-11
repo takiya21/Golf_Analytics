@@ -401,7 +401,7 @@ const ScoreAnalysis = () => {
           <div className="ranking-col">
             <h3>😰 苦手ホール</h3>
             {holeRanking.worst.map((h, i) => (
-              <div key={h.holeNum} className="ranking-item worst" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${h.holeNum}`; }}>
+              <div key={h.holeNum} className="ranking-item worst" onClick={() => navigate(`/hole/${h.holeNum}`)}>
                 <span className="rank">#{i + 1}</span>
                 <span className="rank-hole">Hole {h.holeNum}</span>
                 <span className="rank-info">Par {h.par} / 平均 {h.avg}</span>
@@ -412,7 +412,7 @@ const ScoreAnalysis = () => {
           <div className="ranking-col">
             <h3>💪 得意ホール</h3>
             {holeRanking.best.map((h, i) => (
-              <div key={h.holeNum} className="ranking-item best" onClick={() => { window.location.href = `${import.meta.env.BASE_URL}hole/${h.holeNum}`; }}>
+              <div key={h.holeNum} className="ranking-item best" onClick={() => navigate(`/hole/${h.holeNum}`)}>
                 <span className="rank">#{i + 1}</span>
                 <span className="rank-hole">Hole {h.holeNum}</span>
                 <span className="rank-info">Par {h.par} / 平均 {h.avg}</span>
