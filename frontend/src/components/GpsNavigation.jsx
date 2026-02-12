@@ -78,6 +78,7 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
   const [distanceToTee, setDistanceToTee] = useState(null);
   const watchIdRef = useRef(null);
   const mapRef = useRef(null);
+  const mapInitializedRef = useRef(false);
 
   // ショットログモーダル状態
   const [shotModalOpen, setShotModalOpen] = useState(false);
@@ -93,13 +94,13 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
 
   const holeCoords = HOLE_COORDINATES[holeNumber];
 
-  // マップの中心をティーとグリーンの中間に設定
-  const mapCenter = holeCoords
+  // マップの中心をティーとグリーンの中間に設定（useMemo で参照を安定化）
+  const mapCenter = useMemo(() => holeCoords
     ? {
         lat: (holeCoords.tee.lat + holeCoords.green.lat) / 2,
         lng: (holeCoords.tee.lng + holeCoords.green.lng) / 2,
       }
-    : { lat: 34.804, lng: 137.564 };
+    : { lat: 34.804, lng: 137.564 }, [holeCoords]);
 
   // GPS リアルタイム追跡
   useEffect(() => {
@@ -152,6 +153,7 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
 
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
+    mapInitializedRef.current = true;
     // ズームアウト制限を確実に適用
     map.setOptions({ minZoom: 15 });
     // ティー → グリーン方位を計算してグリーンが画面上部に来るよう heading を適用
@@ -302,9 +304,6 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
     ? [holeCoords.tee, holeCoords.green]
     : [];
 
-  // fairwayAngle を heading に設定し、グリーンが画面上部に来るようにする
-  const mapHeading = holeCoords?.fairwayAngle ?? 0;
-
   // --- Google Maps API キーが無い場合のフォールバック ---
   if (!hasValidKey) {
     return (
@@ -424,9 +423,9 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
       <div className="gps-map-container">
         <GoogleMap
           mapContainerStyle={MAP_CONTAINER_STYLE}
-          center={mapCenter}
-          zoom={getZoomLevel()}
-          options={{ ...MAP_OPTIONS, heading: mapHeading }}
+          center={mapInitializedRef.current ? undefined : mapCenter}
+          zoom={mapInitializedRef.current ? undefined : getZoomLevel()}
+          options={MAP_OPTIONS}
           onLoad={onMapLoad}
           onClick={handleMapClick}
         >
