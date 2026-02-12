@@ -13,6 +13,7 @@ function HoleDetailWrapper() {
 import Rounds from './pages/Rounds';
 import ManualScore from './pages/ManualScore';
 import ScoreAnalysis from './pages/ScoreAnalysis';
+import ShotAnalysisPage from './pages/ShotAnalysisPage';
 import './styles/app.css';
 
 // Google Maps のロード状態を共有する Context
@@ -45,6 +46,7 @@ function AppContent() {
             <li className="nav-item"><Link to="/manual-score" className="nav-link">スコア登録</Link></li>
             <li className="nav-item"><Link to="/analysis" className="nav-link">スコア分析</Link></li>
             <li className="nav-item"><Link to="/courses" className="nav-link">コース分析</Link></li>
+            <li className="nav-item"><Link to="/shot-analysis" className="nav-link">ショット分析</Link></li>
           </ul>
         </div>
       </nav>
@@ -58,6 +60,7 @@ function AppContent() {
           <Route path="/rounds/:roundId" element={<Rounds />} />
           <Route path="/manual-score" element={<ManualScore />} />
           <Route path="/analysis" element={<ScoreAnalysis />} />
+          <Route path="/shot-analysis" element={<ShotAnalysisPage />} />
         </Routes>
       </main>
 

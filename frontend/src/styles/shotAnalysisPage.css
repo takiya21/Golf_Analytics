@@ -1,0 +1,580 @@
+/* =============================================
+   Shot Analysis Page Styles
+   ============================================= */
+
+.sap-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%);
+  color: #ffffff;
+  padding: 16px 12px 100px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ── Header ── */
+.sap-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.sap-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sap-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Round Selector ── */
+.sap-round-selector {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0;
+  margin-bottom: 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.sap-round-selector::-webkit-scrollbar {
+  display: none;
+}
+
+.sap-round-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sap-round-tab:hover {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+.sap-round-tab.active {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+  border-color: #667eea;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.sap-round-date {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.sap-round-meta {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.sap-round-tab.active .sap-round-meta {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Section ── */
+.sap-section {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.sap-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ── Summary Grid ── */
+.sap-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.sap-summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 12px;
+}
+
+.sap-summary-card.warn {
+  background: rgba(231, 76, 60, 0.1);
+  border-color: rgba(231, 76, 60, 0.3);
+}
+
+.sap-summary-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.sap-summary-card.warn .sap-summary-value {
+  color: #e74c3c;
+}
+
+.sap-summary-label {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Hole Score Table ── */
+.sap-hole-table {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.sap-hole-table-header {
+  display: grid;
+  grid-template-columns: 38px 32px 40px 36px 38px 38px 38px 36px;
+  gap: 3px;
+  padding: 6px 6px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sap-hole-table-row {
+  display: grid;
+  grid-template-columns: 38px 32px 40px 36px 38px 38px 38px 36px;
+  gap: 4px;
+  padding: 8px 8px;
+  font-size: 0.78rem;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sap-hole-table-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sap-hole-table-row.good {
+  background: rgba(78, 205, 196, 0.08);
+}
+
+.sap-hole-table-row.bad {
+  background: rgba(231, 76, 60, 0.08);
+}
+
+.sap-hole-num {
+  font-weight: 700;
+  color: #667eea;
+}
+
+.sap-hole-avg {
+  font-weight: 700;
+}
+
+.sap-hole-sd {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.68rem;
+}
+
+.sap-hole-best {
+  color: #4ecdc4;
+  font-weight: 600;
+}
+
+.sap-hole-diff {
+  font-weight: 700;
+}
+
+.sap-hole-diff.under {
+  color: #4ecdc4;
+}
+
+.sap-hole-diff.over {
+  color: #e74c3c;
+}
+
+/* ── Generic Table ── */
+.sap-table {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.sap-table-header {
+  display: grid;
+  gap: 4px;
+  padding: 6px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sap-table-header.six-col {
+  grid-template-columns: 50px repeat(5, 1fr);
+}
+
+.sap-table-header.seven-col {
+  grid-template-columns: 46px repeat(6, 1fr);
+}
+
+.sap-table-header.four-col {
+  grid-template-columns: 1fr repeat(3, 60px);
+}
+
+.sap-table-row {
+  display: grid;
+  gap: 4px;
+  padding: 8px 8px;
+  font-size: 0.78rem;
+  text-align: center;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.sap-table-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sap-table-row.six-col {
+  grid-template-columns: 50px repeat(5, 1fr);
+}
+
+.sap-table-row.seven-col {
+  grid-template-columns: 46px repeat(6, 1fr);
+}
+
+.sap-table-row.four-col {
+  grid-template-columns: 1fr repeat(3, 60px);
+}
+
+.sap-cell-name {
+  font-weight: 600;
+  text-align: left;
+}
+
+.sap-cell-highlight {
+  color: #667eea;
+  font-weight: 700;
+}
+
+.sap-cell-sd {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.72rem;
+}
+
+.sap-cell-good {
+  color: #4ecdc4;
+  font-weight: 600;
+}
+
+.sap-cell-miss {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+/* ── Cards Grid ── */
+.sap-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sap-stat-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sap-stat-card-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sap-stat-icon {
+  font-size: 1rem;
+}
+
+.sap-stat-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.sap-stat-count {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.sap-stat-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sap-stat-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ecdc4, #667eea);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.sap-stat-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.sap-stat-detail {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Result Grid ── */
+.sap-result-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.sap-result-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  border-left: 3px solid;
+}
+
+.sap-result-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  min-width: 100px;
+}
+
+.sap-result-count {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 36px;
+  text-align: right;
+}
+
+.sap-result-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sap-result-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.sap-result-pct {
+  font-size: 0.72rem;
+  font-weight: 600;
+  min-width: 32px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Chart Container ── */
+.sap-chart-container {
+  margin-top: 12px;
+  padding: 12px 4px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+}
+
+.sap-chart-container h3 {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Empty State ── */
+.sap-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.sap-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.sap-empty p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 8px;
+}
+
+.sap-empty-hint {
+  font-size: 0.75rem !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  line-height: 1.6;
+  margin-bottom: 24px !important;
+}
+
+.sap-btn-primary {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.sap-btn-primary:hover {
+  opacity: 0.85;
+}
+
+/* ── Responsive ── */
+@media (max-width: 360px) {
+  .sap-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .sap-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sap-hole-table-header,
+  .sap-hole-table-row {
+    grid-template-columns: 34px 28px 36px 32px 34px 34px 34px 32px;
+    font-size: 0.65rem;
+    gap: 2px;
+  }
+}
+
+/* ── Slope Detail Cards ── */
+.sap-slope-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.sap-slope-detail-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sap-slope-detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sap-slope-detail-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sap-slope-detail-count {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Stacked horizontal bar per slope */
+.sap-slope-stacked-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sap-slope-stacked-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+  min-width: 2px;
+}
+
+/* Result tags per slope */
+.sap-slope-detail-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sap-slope-result-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sap-slope-result-tag strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* recharts label color override */
+.sap-chart-container .recharts-text {
+  fill: rgba(255, 255, 255, 0.7) !important;
+}
+
+.sap-chart-container .recharts-legend-item-text {
+  color: rgba(255, 255, 255, 0.7) !important;
+}

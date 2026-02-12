@@ -1,0 +1,416 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ショット分析 (ShotAnalysis) スタイル
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.shot-analysis-wrapper {
+  padding: 0 0 2rem;
+}
+
+.shot-analysis-page-title {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  padding: 1rem;
+  margin: 0;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shot-analysis {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: white;
+  min-height: 300px;
+}
+
+/* 空の状態 */
+.shot-analysis-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.shot-analysis-empty p:first-child {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.shot-analysis-empty-hint {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+
+/* ── セクション ── */
+.shot-analysis-section {
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.shot-analysis-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+
+/* ── サマリーグリッド ── */
+.shot-analysis-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.shot-analysis-summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shot-analysis-summary-card.highlight {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.summary-card-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: white;
+}
+
+.shot-analysis-summary-card.highlight .summary-card-value {
+  color: #667eea;
+}
+
+.summary-card-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.15rem;
+}
+
+
+/* ── テーブル ── */
+.shot-analysis-table {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.shot-analysis-table-header {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(5, 1fr);
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+.shot-analysis-table-header span:first-child {
+  text-align: left;
+}
+
+.shot-analysis-table-row {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(5, 1fr);
+  padding: 0.55rem 0.75rem;
+  font-size: 0.78rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+  align-items: center;
+  transition: background 0.15s;
+}
+
+.shot-analysis-table-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.shot-analysis-table-row span:first-child {
+  text-align: left;
+}
+
+.shot-analysis-club-name,
+.shot-analysis-slope-name {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.shot-analysis-highlight {
+  font-weight: 700;
+  color: #667eea;
+}
+
+.shot-analysis-good {
+  color: #4ecdc4;
+  font-weight: 600;
+}
+
+.shot-analysis-miss {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+/* 4列テーブル（傾斜用） */
+.shot-analysis-section:nth-child(4) .shot-analysis-table-header,
+.shot-analysis-section:nth-child(4) .shot-analysis-table-row {
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+}
+
+
+/* ── カードグリッド（地点状況） ── */
+.shot-analysis-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.shot-analysis-card {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.shot-analysis-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.shot-analysis-card-icon {
+  font-size: 1.1rem;
+}
+
+.shot-analysis-card-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex: 1;
+}
+
+.shot-analysis-card-count {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.shot-analysis-card-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+
+.shot-analysis-card-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.shot-analysis-card-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.shot-analysis-card-results {
+  font-size: 0.65rem;
+}
+
+
+/* ── ショット結果カード ── */
+.shot-analysis-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.shot-analysis-result-card {
+  padding: 0.65rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 3px solid;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.result-card-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.result-card-count {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.result-card-bar {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.result-card-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.result-card-pct {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: right;
+}
+
+
+/* ── チャートコンテナ ── */
+.shot-analysis-chart-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.shot-analysis-chart-container h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* recharts ツールチップ */
+.shot-analysis .recharts-tooltip-item {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.shot-analysis .recharts-legend-item-text {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 0.75rem !important;
+}
+
+
+/* ── 傾斜別ショット結果内訳 ── */
+.shot-analysis-table-7col {
+  grid-template-columns: 1fr repeat(4, 0.8fr) repeat(2, 0.7fr) !important;
+}
+
+.shot-analysis-sd {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.72rem;
+}
+
+.shot-analysis-slope-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.shot-analysis-slope-detail-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shot-analysis-slope-detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shot-analysis-slope-detail-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.shot-analysis-slope-detail-count {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.shot-analysis-slope-stacked-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.shot-analysis-slope-stacked-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+  min-width: 2px;
+}
+
+.shot-analysis-slope-detail-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.shot-analysis-slope-result-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.shot-analysis-slope-result-tag strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* ── レスポンシブ ── */
+@media (max-width: 480px) {
+  .shot-analysis-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shot-analysis-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .shot-analysis-result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shot-analysis-table-header,
+  .shot-analysis-table-row {
+    font-size: 0.68rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .shot-analysis-section:nth-child(2) .shot-analysis-table-header,
+  .shot-analysis-section:nth-child(2) .shot-analysis-table-row {
+    grid-template-columns: 1fr repeat(3, 0.8fr) repeat(2, 0.7fr);
+  }
+}

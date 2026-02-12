@@ -1,10 +1,13 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import GpsNavigation from '../components/GpsNavigation';
 import GreenDetailPopup from '../components/GreenDetailPopup';
+import ShotAnalysis from '../components/ShotAnalysis';
 import '../styles/holeDetail.css';
 import '../styles/gpsNavigation.css';
+import '../styles/shotLog.css';
+import '../styles/shotAnalysis.css';
 
 const HoleDetail = () => {
   const navigate = useNavigate();
@@ -192,6 +195,236 @@ const HoleDetail = () => {
   // タブ切り替え状態
   const [activeTab, setActiveTab] = useState('map');
 
+  // ── ショットログ state ──
+  // LocalStorage キー: golfys_shotlog_<holeNumber>
+  // 保存形式: { "YYYY-MM-DD": [shot, ...], ... }（日付別にグループ化）
+  const shotLogKey = `golfys_shotlog_${currentHoleNumber}`;
+
+  // 今日の日付文字列
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  const [shotLogByDate, setShotLogByDate] = useState(() => {
+    try {
+      const saved = localStorage.getItem(shotLogKey);
+      if (!saved) return {};
+      const parsed = JSON.parse(saved);
+      // 後方互換：旧フォーマット（配列）→ 新フォーマット（日付キーオブジェクト）へ移行
+      if (Array.isArray(parsed)) {
+        if (parsed.length === 0) return {};
+        return { [todayStr]: parsed };
+      }
+      return parsed;
+    } catch {
+      return {};
+    }
+  });
+
+  // 選択中の日付（複数選択対応）
+  const [selectedDates, setSelectedDates] = useState([todayStr]);
+
+  // 利用可能な日付一覧（降順ソート）
+  const availableDates = useMemo(() => {
+    return Object.keys(shotLogByDate)
+      .filter((d) => shotLogByDate[d] && shotLogByDate[d].length > 0)
+      .sort((a, b) => b.localeCompare(a));
+  }, [shotLogByDate]);
+
+  // 日付ごとのショット数マップ
+  const shotCountByDate = useMemo(() => {
+    const counts = {};
+    availableDates.forEach((d) => {
+      counts[d] = (shotLogByDate[d] || []).length;
+    });
+    return counts;
+  }, [shotLogByDate, availableDates]);
+
+  // 全選択中かどうか
+  const isAllSelected = useMemo(() => {
+    return availableDates.length > 0 && availableDates.every((d) => selectedDates.includes(d));
+  }, [availableDates, selectedDates]);
+
+  // 日付トグル
+  const handleToggleDate = useCallback((date) => {
+    setSelectedDates((prev) => {
+      if (prev.includes(date)) {
+        const next = prev.filter((d) => d !== date);
+        return next.length > 0 ? next : [date]; // 最低1つは選択
+      }
+      return [...prev, date];
+    });
+  }, []);
+
+  // 全選択 / 全解除
+  const handleToggleAllDates = useCallback(() => {
+    if (isAllSelected) {
+      // 全解除 → 今日のみ or 最新日付のみ
+      setSelectedDates([availableDates[0] || todayStr]);
+    } else {
+      setSelectedDates([...availableDates]);
+    }
+  }, [isAllSelected, availableDates, todayStr]);
+
+  // 選択中の全日付のショットを結合（日付情報タグ付き）
+  const shotLog = useMemo(() => {
+    const combined = [];
+    // 選択日付を昇順で処理
+    const sortedDates = [...selectedDates].sort();
+    sortedDates.forEach((date) => {
+      const shots = shotLogByDate[date] || [];
+      shots.forEach((shot) => {
+        combined.push({ ...shot, _date: date });
+      });
+    });
+    return combined;
+  }, [shotLogByDate, selectedDates]);
+
+  // 編集・削除対象の日付を特定するためのアクティブ編集日付
+  // （パネルから操作される場合、ショットの _date を使う）
+
+  // ショットログをローカルストレージに同期
+  useEffect(() => {
+    localStorage.setItem(shotLogKey, JSON.stringify(shotLogByDate));
+  }, [shotLogByDate, shotLogKey]);
+
+  // ── ショットログからスコアを自動記録 ──
+  useEffect(() => {
+    if (!hole) return;
+    const rounds = JSON.parse(localStorage.getItem('golfys_rounds') || '[]');
+    let updated = false;
+
+    Object.entries(shotLogByDate).forEach(([date, shots]) => {
+      if (!shots || shots.length === 0) return;
+      const shotCount = shots.length;
+      const puttCount = shots.filter(s => s.shotType === 'putt' || s.club === 'PT').length;
+      const obCount = shots.filter(s => s.shotType === 'ob' || s.positionType === 'ob_penalty').length;
+      const bunkerCount = shots.filter(s => s.positionType === 'bunker').length;
+      const firstClub = shots[0]?.club || '-';
+      // フェアウェイキープ判定: 2打目がフェアウェイなら〇
+      const secondShot = shots[1];
+      let fwKept = '-';
+      if (secondShot) {
+        if (secondShot.positionType === 'fairway') fwKept = '〇';
+        else if (secondShot.positionType === 'rough') fwKept = '左'; // 簡易判定
+      }
+
+      const holeScore = {
+        score: shotCount,
+        putts: puttCount,
+        first_club: firstClub,
+        fairway_kept: fwKept,
+        ob_count: obCount,
+        bunker_count: bunkerCount,
+        penalty_count: obCount,
+        _from_shotlog: true, // ショットログから自動記録のマーカー
+      };
+
+      let existingRound = rounds.find(r => r.play_date === date);
+      if (existingRound) {
+        // 既存ラウンドのこのホールにショットログデータを更新
+        const existingHole = existingRound.holes[currentHoleNumber];
+        if (!existingHole || existingHole._from_shotlog) {
+          existingRound.holes[currentHoleNumber] = holeScore;
+          updated = true;
+        }
+      } else {
+        rounds.push({
+          id: Date.now() + Math.random(),
+          course_id: 'lake-hamamatsu',
+          course_name: 'レイク浜松カントリークラブ',
+          play_date: date,
+          holes: { [currentHoleNumber]: holeScore },
+          created_at: new Date().toISOString(),
+          _from_shotlog: true,
+        });
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      localStorage.setItem('golfys_rounds', JSON.stringify(rounds));
+    }
+  }, [shotLogByDate, currentHoleNumber, hole]);
+
+  // ショット追加（今日の日付に追加）
+  const handleAddShot = useCallback((shotData) => {
+    const dateKey = todayStr;
+    setShotLogByDate((prev) => {
+      const existing = prev[dateKey] || [];
+      return { ...prev, [dateKey]: [...existing, shotData] };
+    });
+    // 今日が選択に入っていなければ追加
+    setSelectedDates((prev) => prev.includes(todayStr) ? prev : [...prev, todayStr]);
+  }, [todayStr]);
+
+  // ショット削除（_date タグから対象日付を特定）
+  const handleDeleteShot = useCallback((combinedIndex) => {
+    const target = shotLog[combinedIndex];
+    if (!target) return;
+    const dateKey = target._date;
+    setShotLogByDate((prev) => {
+      const existing = prev[dateKey] || [];
+      // combinedIndex は結合配列内のインデックス。対象日付内のインデックスを求める
+      const dateShots = existing.filter((s) => s !== target);
+      // 正確にマッチさせるため、位置で特定
+      let dateIndex = 0;
+      const sortedDates = [...selectedDates].sort();
+      let offset = 0;
+      for (const d of sortedDates) {
+        if (d === dateKey) break;
+        offset += (prev[d] || []).length;
+      }
+      dateIndex = combinedIndex - offset;
+
+      const updated = existing.filter((_, i) => i !== dateIndex)
+        .map((s, i) => ({ ...s, number: i + 1 }));
+      if (updated.length === 0) {
+        const newState = { ...prev };
+        delete newState[dateKey];
+        return newState;
+      }
+      return { ...prev, [dateKey]: updated };
+    });
+  }, [shotLog, selectedDates]);
+
+  // ショット編集（_date タグから対象日付を特定）
+  const handleEditShot = useCallback((combinedIndex, updatedData) => {
+    const target = shotLog[combinedIndex];
+    if (!target) return;
+    const dateKey = target._date;
+    setShotLogByDate((prev) => {
+      const sortedDates = [...selectedDates].sort();
+      let offset = 0;
+      for (const d of sortedDates) {
+        if (d === dateKey) break;
+        offset += (prev[d] || []).length;
+      }
+      const dateIndex = combinedIndex - offset;
+
+      const existing = prev[dateKey] || [];
+      const updated = existing.map((s, i) => {
+        if (i === dateIndex) {
+          return { ...updatedData, number: i + 1 };
+        }
+        return s;
+      });
+      return { ...prev, [dateKey]: updated };
+    });
+  }, [shotLog, selectedDates]);
+
+  // 全ショットクリア（選択中の全日付のショットをクリア）
+  const handleClearShots = useCallback(() => {
+    const dateLabel = selectedDates.length > 1
+      ? `${selectedDates.length}日分`
+      : selectedDates[0];
+    if (window.confirm(`${dateLabel} のショットログを全て削除しますか？`)) {
+      setShotLogByDate((prev) => {
+        const newState = { ...prev };
+        selectedDates.forEach((d) => delete newState[d]);
+        return newState;
+      });
+    }
+  }, [selectedDates]);
+
   const clubs = ['ドライバー', '3W', '5W', '4U', '5U', '6U', '2I', '3I', '4I', '5I', '6I', '7I', '8I', '9I', 'PW', 'AW', 'SW', 'パター'];
   const fwKeepOptions = ['〇', '左', '右', 'ショート'];
 
@@ -304,6 +537,17 @@ const HoleDetail = () => {
               par={hole.par}
               yardage={hole.yardage}
               onGreenTap={handleGreenTap}
+              shots={shotLog}
+              onAddShot={handleAddShot}
+              onDeleteShot={handleDeleteShot}
+              onEditShot={handleEditShot}
+              onClearShots={handleClearShots}
+              selectedDates={selectedDates}
+              availableDates={availableDates}
+              shotCountByDate={shotCountByDate}
+              isAllSelected={isAllSelected}
+              onToggleDate={handleToggleDate}
+              onToggleAllDates={handleToggleAllDates}
             />
 
             {/* スコア詳細カード */}
@@ -691,6 +935,28 @@ const HoleDetail = () => {
           </div>
         )}
 
+        {/* ===== ショット分析 タブ ===== */}
+        {activeTab === 'analysis' && (
+          <>
+            <div className="tab-switch-banner">
+              <button
+                className="tab-switch-btn to-map"
+                onClick={() => setActiveTab('map')}
+              >
+                🗺️ コースマップを見る
+              </button>
+            </div>
+            <div className="shot-analysis-wrapper">
+              <h2 className="shot-analysis-page-title">📊 Hole {hole.hole_number} ショット分析</h2>
+              <ShotAnalysis
+                shotLogByDate={shotLogByDate}
+                holePar={hole.par}
+                holeNumber={hole.hole_number}
+              />
+            </div>
+          </>
+        )}
+
       </div>
 
       {/* ===== 下部タブバー ===== */}
@@ -708,6 +974,13 @@ const HoleDetail = () => {
         >
           <span className="hole-tab-icon">📝</span>
           <span className="hole-tab-label">スコア入力</span>
+        </button>
+        <button
+          className={`hole-tab-btn ${activeTab === 'analysis' ? 'active' : ''}`}
+          onClick={() => setActiveTab('analysis')}
+        >
+          <span className="hole-tab-icon">📊</span>
+          <span className="hole-tab-label">ショット分析</span>
         </button>
       </div>
 

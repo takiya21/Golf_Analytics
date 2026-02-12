@@ -1,0 +1,1016 @@
+/* ===========================================================
+   Shot Log Styles – モーダル / パネル / マーカー
+   =========================================================== */
+
+/* ── ショット入力モーダル ── */
+.shotlog-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  animation: fadeIn 0.2s ease;
+}
+
+.shotlog-modal-content {
+  background: #1a1a2e;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease;
+  color: white;
+}
+
+.shotlog-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shotlog-modal-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.shotlog-modal-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.shotlog-modal-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* 位置情報表示 */
+.shotlog-modal-position {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(66, 133, 244, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.shotlog-pos-icon {
+  font-size: 1.1rem;
+}
+
+.shotlog-pos-text {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: monospace;
+}
+
+/* セクション */
+.shotlog-modal-section {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.shotlog-modal-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* クラブ選択グリッド */
+.shotlog-club-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.shotlog-club-btn {
+  padding: 0.6rem 0.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.shotlog-club-btn:hover {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+.shotlog-club-btn.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+/* ライ選択 */
+.shotlog-lie-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.shotlog-lie-btn {
+  padding: 0.6rem 0.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.shotlog-lie-btn:hover {
+  background: rgba(78, 205, 196, 0.2);
+  border-color: rgba(78, 205, 196, 0.4);
+}
+
+.shotlog-lie-btn.active {
+  background: linear-gradient(135deg, #4ecdc4, #44bd9e);
+  border-color: #4ecdc4;
+  color: white;
+  box-shadow: 0 2px 8px rgba(78, 205, 196, 0.4);
+}
+
+/* ── 地点状況グリッド ── */
+.shotlog-position-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.shotlog-position-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.55rem 0.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.shotlog-position-btn:hover {
+  background: rgba(78, 205, 196, 0.2);
+  border-color: rgba(78, 205, 196, 0.4);
+}
+
+.shotlog-position-btn.active {
+  background: linear-gradient(135deg, #4ecdc4, #44bd9e);
+  border-color: #4ecdc4;
+  color: white;
+  box-shadow: 0 2px 8px rgba(78, 205, 196, 0.4);
+}
+
+.shotlog-position-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.shotlog-position-text {
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+/* ── 傾斜チェックボックスグリッド（複数選択） ── */
+.shotlog-slope-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.shotlog-slope-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.shotlog-slope-checkbox:hover {
+  background: rgba(255, 159, 67, 0.15);
+  border-color: rgba(255, 159, 67, 0.4);
+}
+
+.shotlog-slope-checkbox.checked {
+  background: linear-gradient(135deg, rgba(255, 159, 67, 0.25), rgba(255, 107, 107, 0.2));
+  border-color: #ff9f43;
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 159, 67, 0.3);
+}
+
+.shotlog-slope-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.shotlog-slope-check-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 0.7rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.shotlog-slope-checkbox.checked .shotlog-slope-check-mark {
+  background: #ff9f43;
+  border-color: #ff9f43;
+  color: white;
+}
+
+.shotlog-slope-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.shotlog-slope-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.shotlog-label-hint {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ── ショット結果グリッド ── */
+.shotlog-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.shotlog-result-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.55rem 0.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.shotlog-result-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.shotlog-result-btn.active.shotlog-result-good {
+  background: linear-gradient(135deg, #4ecdc4, #44bd9e);
+  border-color: #4ecdc4;
+  color: white;
+  box-shadow: 0 2px 8px rgba(78, 205, 196, 0.4);
+}
+
+.shotlog-result-btn.active.shotlog-result-fat {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  border-color: #e74c3c;
+  color: white;
+}
+
+.shotlog-result-btn.active.shotlog-result-thin {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  border-color: #f39c12;
+  color: white;
+}
+
+.shotlog-result-btn.active.shotlog-result-slice {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  border-color: #e67e22;
+  color: white;
+}
+
+.shotlog-result-btn.active.shotlog-result-hook {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  border-color: #9b59b6;
+  color: white;
+}
+
+.shotlog-result-btn.active.shotlog-result-shank {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  border-color: #e74c3c;
+  color: white;
+}
+
+.shotlog-result-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.shotlog-result-text {
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+/* アクションボタン */
+.shotlog-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.shotlog-btn-cancel {
+  flex: 1;
+  padding: 0.85rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shotlog-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.shotlog-btn-save {
+  flex: 2;
+  padding: 0.85rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.shotlog-btn-save:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+}
+
+/* モーダル内削除ボタン */
+.shotlog-btn-delete {
+  flex: 1;
+  padding: 0.85rem;
+  border: 2px solid rgba(255, 107, 107, 0.5);
+  border-radius: 10px;
+  background: transparent;
+  color: #ff6b6b;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shotlog-btn-delete:hover {
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.shotlog-btn-delete-confirm {
+  background: #ff6b6b;
+  color: white;
+  border-color: #ff6b6b;
+  animation: pulse-delete 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-delete {
+  from { box-shadow: 0 0 0 rgba(255, 107, 107, 0.3); }
+  to { box-shadow: 0 0 12px rgba(255, 107, 107, 0.5); }
+}
+
+
+/* ── マップ上の「現在地を記録」ボタン ── */
+.shotlog-record-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+  transition: all 0.3s ease;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.shotlog-record-btn:hover {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.6);
+}
+
+.shotlog-record-btn:active {
+  transform: translateX(-50%) translateY(0);
+}
+
+.shotlog-record-icon {
+  font-size: 1.1rem;
+}
+
+.shotlog-record-text {
+  font-size: 0.9rem;
+}
+
+
+/* ── マップ上の距離ラベル（ショット間） ── */
+.shotlog-distance-label {
+  background: rgba(0, 0, 0, 0.75);
+  color: #00e5ff;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+
+/* ── 日付セレクター（複数選択対応） ── */
+.shotlog-date-selector {
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shotlog-date-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.shotlog-date-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.shotlog-date-all-btn {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shotlog-date-all-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.shotlog-date-all-active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: transparent;
+  color: white;
+}
+
+.shotlog-date-all-active:hover {
+  background: linear-gradient(135deg, #5a71d4, #6a4299);
+}
+
+.shotlog-date-tabs {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.shotlog-date-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.shotlog-date-tab {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.shotlog-date-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.shotlog-date-tab-active {
+  background: rgba(255, 255, 255, 0.12);
+  border-width: 2px;
+  color: white;
+}
+
+.shotlog-date-tab-active:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.shotlog-date-color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.shotlog-date-tab-new {
+  border-style: dashed;
+  border-color: rgba(102, 126, 234, 0.5);
+  color: rgba(102, 126, 234, 0.8);
+}
+
+.shotlog-date-tab-new:hover {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.7);
+  color: #667eea;
+}
+
+.shotlog-date-tab-count {
+  font-size: 0.68rem;
+  opacity: 0.6;
+  margin-left: 0.1rem;
+}
+
+/* ヘッダー内の日付表示 */
+.shotlog-header-date {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 日付グループヘッダー（複数日付表示時） */
+.shotlog-date-group-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.shotlog-date-group-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.shotlog-date-group-text {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.5px;
+}
+
+/* ショットアイテムの日付カラーバー */
+.shotlog-item-date-bar {
+  width: 4px;
+  border-radius: 2px;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+
+
+/* ── ショットログパネル ── */
+.shotlog-panel {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 0;
+  color: white;
+}
+
+.shotlog-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shotlog-panel-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.shotlog-clear-btn {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  border-radius: 6px;
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shotlog-clear-btn:hover {
+  background: rgba(255, 107, 107, 0.25);
+}
+
+/* 空の状態 */
+.shotlog-empty {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.shotlog-empty p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.shotlog-empty-hint {
+  margin-top: 0.5rem !important;
+  font-size: 0.8rem !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* 合計距離 */
+.shotlog-total-distance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background: rgba(102, 126, 234, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.shotlog-total-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.shotlog-total-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #00e5ff;
+}
+
+/* ショット一覧 */
+.shotlog-list {
+  padding: 0.5rem 0;
+}
+
+.shotlog-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s;
+}
+
+.shotlog-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.shotlog-item-ob {
+  border-left: 3px solid #e74c3c;
+}
+
+.shotlog-item-penalty {
+  border-left: 3px solid #f39c12;
+}
+
+.shotlog-item-putt {
+  border-left: 3px solid #667eea;
+}
+
+.shotlog-item-normal {
+  border-left: 3px solid #4ecdc4;
+}
+
+/* 番号 */
+.shotlog-item-number {
+  position: relative;
+}
+
+.shotlog-number-badge {
+  display: none; /* 隠し文字列 */
+}
+
+.shotlog-number-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* 詳細 */
+.shotlog-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.shotlog-item-top {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.shotlog-club-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: white;
+}
+
+.shotlog-lie-badge {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.shotlog-type-badge {
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+}
+
+.shotlog-item-distance {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #00e5ff;
+}
+
+.shotlog-item-distance strong {
+  font-weight: 700;
+}
+
+/* ショットアイテム メタ行（傾斜 + 結果） */
+.shotlog-item-meta {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.2rem;
+}
+
+.shotlog-slope-badges {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.shotlog-slope-tag {
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  background: rgba(255, 159, 67, 0.15);
+  border: 1px solid rgba(255, 159, 67, 0.3);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #ff9f43;
+  white-space: nowrap;
+}
+
+.shotlog-result-tag {
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+}
+
+/* アクションボタン群 */
+.shotlog-item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  margin-left: 0.25rem;
+}
+
+/* 編集ボタン */
+.shotlog-edit-btn {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.2rem 0.3rem;
+  transition: opacity 0.2s, transform 0.2s;
+  opacity: 0.5;
+  line-height: 1;
+}
+
+.shotlog-edit-btn:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+/* 削除ボタン */
+.shotlog-delete-btn {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.2rem 0.3rem;
+  transition: opacity 0.2s, transform 0.2s;
+  opacity: 0.5;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.shotlog-delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+
+/* ── クラブ別飛距離統計 ── */
+.shotlog-club-stats {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shotlog-club-stats h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.shotlog-club-stats-table {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.shotlog-club-stats-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 0.7fr;
+  gap: 0;
+  padding: 0.6rem 0.75rem;
+  background: rgba(102, 126, 234, 0.15);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+.shotlog-club-stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 0.7fr;
+  gap: 0;
+  padding: 0.55rem 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.shotlog-club-stats-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.shotlog-club-stats-name {
+  font-weight: 700;
+  color: white;
+}
+
+.shotlog-club-stats-avg {
+  color: #00e5ff;
+  font-weight: 700;
+}
+
+.shotlog-club-stats-max {
+  color: #4ecdc4;
+}
+
+.shotlog-club-stats-min {
+  color: #f39c12;
+}
+
+.shotlog-club-stats-count {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* ── レスポンシブ ── */
+@media (max-width: 480px) {
+  .shotlog-club-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .shotlog-lie-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .shotlog-position-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .shotlog-slope-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shotlog-result-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shotlog-type-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shotlog-record-btn {
+    bottom: 12px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  .shotlog-club-stats-header,
+  .shotlog-club-stats-row {
+    font-size: 0.7rem;
+    padding: 0.45rem 0.5rem;
+  }
+}
