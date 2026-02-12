@@ -154,9 +154,13 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
     mapRef.current = map;
     // ズームアウト制限を確実に適用
     map.setOptions({ minZoom: 15 });
-    // fairwayAngle でグリーンが画面上部に来るよう heading を適用
-    if (holeCoords && holeCoords.fairwayAngle != null) {
-      map.setHeading(holeCoords.fairwayAngle);
+    // ティー → グリーン方位を計算してグリーンが画面上部に来るよう heading を適用
+    if (holeCoords) {
+      const bearing = calcBearing(
+        holeCoords.tee.lat, holeCoords.tee.lng,
+        holeCoords.green.lat, holeCoords.green.lng
+      );
+      map.setHeading(bearing);
     }
   }, [holeCoords]);
 
