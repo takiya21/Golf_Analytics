@@ -457,38 +457,6 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
             />
           )}
 
-          {/* グリーン：クリック可能エリア */}
-          {holeCoords && (
-            <>
-              <Circle
-                center={holeCoords.green}
-                radius={15}
-                options={{
-                  fillColor: '#00C851',
-                  fillOpacity: 0.5,
-                  strokeColor: '#00C851',
-                  strokeWeight: 2,
-                  clickable: true,
-                }}
-                onClick={onGreenTap}
-              />
-              {/* グリーンラベル */}
-              <OverlayView
-                position={holeCoords.green}
-                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-              >
-                <div
-                  className="gps-green-label"
-                  onClick={onGreenTap}
-                  role="button"
-                  tabIndex={0}
-                >
-                  🟢 Green
-                </div>
-              </OverlayView>
-            </>
-          )}
-
           {/* ── ショットログ：ポリライン（ショット間の線） ── */}
           {shotPolylines.map((line, idx) => (
             <React.Fragment key={`shot-line-${idx}`}>
