@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
 import { useJsApiLoader } from '@react-google-maps/api';
 import Dashboard from './pages/Dashboard';
@@ -36,9 +36,26 @@ function GoogleMapsProvider({ children }) {
 }
 
 function AppContent() {
+  const [navHidden, setNavHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY > lastScrollY.current && currentY > 60) {
+        setNavHidden(true);
+      } else {
+        setNavHidden(false);
+      }
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <div className="app">
-      <nav className="navbar">
+      <nav className={`navbar${navHidden ? ' navbar--hidden' : ''}`}>
         <div className="nav-container">
           <Link to="/" className="nav-logo">⛳ Golfys</Link>
           <ul className="nav-menu">

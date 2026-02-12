@@ -19,7 +19,7 @@ const MAP_OPTIONS = {
   fullscreenControl: true,
   gestureHandling: 'greedy',
   rotateControl: true,
-  tilt: 0,
+  tilt: 45,
   minZoom: 5,
 };
 
@@ -155,36 +155,36 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
     mapInitializedRef.current = true;
-    // ティー → グリーン方位を計算してグリーンが画面上部に来るよう heading を適用
     if (holeCoords) {
+      // ティー → グリーン方位を計算してグリーンが画面上部に来るよう heading を適用
       const bearing = calcBearing(
         holeCoords.tee.lat, holeCoords.tee.lng,
         holeCoords.green.lat, holeCoords.green.lng
       );
       map.setHeading(bearing);
-
-      // ティー・グリーン座標から表示範囲を制限（周囲に余裕を持たせる）
-      const latMin = Math.min(holeCoords.tee.lat, holeCoords.green.lat);
-      const latMax = Math.max(holeCoords.tee.lat, holeCoords.green.lat);
-      const lngMin = Math.min(holeCoords.tee.lng, holeCoords.green.lng);
-      const lngMax = Math.max(holeCoords.tee.lng, holeCoords.green.lng);
-      const latPad = Math.max((latMax - latMin) * 0.05, 0.0000015);
-      const lngPad = Math.max((lngMax - lngMin) * 0.05, 0.0000015);
-      map.setOptions({
-        minZoom: 15,
-        restriction: {
-          latLngBounds: {
-            north: latMax + latPad,
-            south: latMin - latPad,
-            east: lngMax + lngPad,
-            west: lngMin - lngPad,
-          },
-          strictBounds: false,
-        },
-      });
-    } else {
-      map.setOptions({ minZoom: 15 });
+      // ティー〜グリーンがちょうど映るように fitBounds
+      const bounds = new window.google.maps.LatLngBounds();
+      bounds.extend(holeCoords.tee);
+      bounds.extend(holeCoords.green);
+      map.fitBounds(bounds, { top: 60, bottom: 60, left: 40, right: 40 });
     }
+  }, [holeCoords]);
+
+  // マップを初期状態（ホール全体表示・向き・傾き）に戻す
+  const handleResetMap = useCallback(() => {
+    if (!mapRef.current || !holeCoords) return;
+    const map = mapRef.current;
+    const bearing = calcBearing(
+      holeCoords.tee.lat, holeCoords.tee.lng,
+      holeCoords.green.lat, holeCoords.green.lng
+    );
+    map.setHeading(bearing);
+    map.setTilt(45);
+    // ティー〜グリーンがちょうど映るように fitBounds
+    const bounds = new window.google.maps.LatLngBounds();
+    bounds.extend(holeCoords.tee);
+    bounds.extend(holeCoords.green);
+    map.fitBounds(bounds, { top: 60, bottom: 60, left: 40, right: 40 });
   }, [holeCoords]);
 
   // ── ショットログ：現在地を記録 ──
@@ -553,6 +553,15 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
             />
           )}
         </GoogleMap>
+
+        {/* マップ初期状態リセットボタン */}
+        <button
+          className="gps-reset-btn"
+          onClick={handleResetMap}
+          title="マップを初期表示に戻す"
+        >
+          🔄
+        </button>
 
         {/* ── ショットログ：現在地記録ボタン（マップ上にオーバーレイ） ── */}
         <button

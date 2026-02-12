@@ -432,6 +432,37 @@
 }
 
 
+/* ── マップ初期状態リセットボタン ── */
+.gps-reset-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffffff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: background 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.gps-reset-btn:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.gps-reset-btn:active {
+  transform: scale(0.9);
+}
+
 /* ── マップ上の「現在地を記録」ボタン ── */
 .shotlog-record-btn {
   position: absolute;
