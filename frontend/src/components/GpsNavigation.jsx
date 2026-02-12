@@ -18,6 +18,7 @@ const MAP_OPTIONS = {
   streetViewControl: false,
   fullscreenControl: true,
   gestureHandling: 'greedy',
+  rotateControl: true,
   tilt: 0,
   minZoom: 5,
 };
@@ -154,8 +155,6 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
     mapInitializedRef.current = true;
-    // ズームアウト制限を確実に適用
-    map.setOptions({ minZoom: 15 });
     // ティー → グリーン方位を計算してグリーンが画面上部に来るよう heading を適用
     if (holeCoords) {
       const bearing = calcBearing(
@@ -163,6 +162,28 @@ const GpsNavigation = ({ holeNumber, par, yardage, onGreenTap, shots, onAddShot,
         holeCoords.green.lat, holeCoords.green.lng
       );
       map.setHeading(bearing);
+
+      // ティー・グリーン座標から表示範囲を制限（周囲に余裕を持たせる）
+      const latMin = Math.min(holeCoords.tee.lat, holeCoords.green.lat);
+      const latMax = Math.max(holeCoords.tee.lat, holeCoords.green.lat);
+      const lngMin = Math.min(holeCoords.tee.lng, holeCoords.green.lng);
+      const lngMax = Math.max(holeCoords.tee.lng, holeCoords.green.lng);
+      const latPad = Math.max((latMax - latMin) * 0.05, 0.0000015);
+      const lngPad = Math.max((lngMax - lngMin) * 0.05, 0.0000015);
+      map.setOptions({
+        minZoom: 15,
+        restriction: {
+          latLngBounds: {
+            north: latMax + latPad,
+            south: latMin - latPad,
+            east: lngMax + lngPad,
+            west: lngMin - lngPad,
+          },
+          strictBounds: false,
+        },
+      });
+    } else {
+      map.setOptions({ minZoom: 15 });
     }
   }, [holeCoords]);
 
