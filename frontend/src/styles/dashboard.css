@@ -182,6 +182,25 @@
   color: var(--secondary-color);
 }
 
+/* Section header with inline button */
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header-row h2 {
+  margin: 0;
+}
+
+.btn-sm {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
 @media (max-width: 768px) {
   .dashboard-header h1 {
     font-size: 2rem;

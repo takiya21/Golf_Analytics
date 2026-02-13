@@ -206,19 +206,22 @@ const Dashboard = () => {
         </section>
 
         <section className="recent-rounds">
-          <h2>📅 最近のラウンド</h2>
+          <div className="section-header-row">
+            <h2>📅 最近のラウンド</h2>
+            <Link to="/rounds" className="btn btn-secondary btn-sm">ラウンド履歴 →</Link>
+          </div>
           {recentRounds.length > 0 ? (
             <>
               <div className="rounds-preview">
                 {recentRounds.map(round => (
-                  <div key={round.id} className="round-preview-card">
+                  <Link key={round.id} to={`/rounds/${round.id}`} className="round-preview-card" style={{ textDecoration: 'none', color: 'inherit' }}>
                     <div className="round-preview-info">
                       <h3>{round.course_name || 'Unknown Course'}</h3>
                       <p className="date">{round.play_date}</p>
                       <p className="score">スコア: {round.totalScore}</p>
                       <p className="putts">パット: {round.totalPutts}</p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
               {stats.total_rounds > 5 && (
