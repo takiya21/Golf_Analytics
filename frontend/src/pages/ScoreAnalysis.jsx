@@ -28,7 +28,8 @@ const ScoreAnalysis = () => {
     const roundSummaries = rounds.map(round => {
       let totalScore = 0, totalPutts = 0, holeCount = 0;
       let fwKept = 0, fwTotal = 0, obCount = 0, bunkerCount = 0, penaltyCount = 0;
-      let birdieOrBetter = 0, parCount = 0, bogeyCount = 0, doublePlus = 0;
+      let birdieOrBetter = 0, parCount = 0, bogeyCount = 0, doubleCount = 0, tripleCount = 0, quadPlusCount = 0;
+      let parOnCount = 0, bogeyOnCount = 0;
 
       for (let h = 1; h <= 18; h++) {
         const hole = round.holes[h];
@@ -48,7 +49,14 @@ const ScoreAnalysis = () => {
         if (diff <= -1) birdieOrBetter++;
         else if (diff === 0) parCount++;
         else if (diff === 1) bogeyCount++;
-        else doublePlus++;
+        else if (diff === 2) doubleCount++;
+        else if (diff === 3) tripleCount++;
+        else quadPlusCount++;
+
+        // パーオン・ボギーオン（ショット数 = score - putts）
+        const shotsToGreen = hole.score - (hole.putts || 0);
+        if (shotsToGreen <= par - 2) parOnCount++;
+        else if (shotsToGreen === par - 1) bogeyOnCount++;
       }
 
       const outScore = Array.from({ length: 9 }, (_, i) => round.holes[i + 1]?.score || 0).reduce((a, b) => a + b, 0);
@@ -60,7 +68,8 @@ const ScoreAnalysis = () => {
         totalScore, totalPutts, holeCount,
         outScore, inScore,
         fwKept, fwTotal, obCount, bunkerCount, penaltyCount,
-        birdieOrBetter, parCount, bogeyCount, doublePlus
+        birdieOrBetter, parCount, bogeyCount, doubleCount, tripleCount, quadPlusCount,
+        parOnCount, bogeyOnCount
       };
     });
 
@@ -82,8 +91,13 @@ const ScoreAnalysis = () => {
     const totalBirdie = roundSummaries.reduce((s, r) => s + r.birdieOrBetter, 0);
     const totalPar = roundSummaries.reduce((s, r) => s + r.parCount, 0);
     const totalBogey = roundSummaries.reduce((s, r) => s + r.bogeyCount, 0);
-    const totalDouble = roundSummaries.reduce((s, r) => s + r.doublePlus, 0);
-    const totalHoles = totalBirdie + totalPar + totalBogey + totalDouble;
+    const totalDouble = roundSummaries.reduce((s, r) => s + r.doubleCount, 0);
+    const totalTriple = roundSummaries.reduce((s, r) => s + r.tripleCount, 0);
+    const totalQuadPlus = roundSummaries.reduce((s, r) => s + r.quadPlusCount, 0);
+    const totalHoles = totalBirdie + totalPar + totalBogey + totalDouble + totalTriple + totalQuadPlus;
+
+    const totalParOn = roundSummaries.reduce((s, r) => s + r.parOnCount, 0);
+    const totalBogeyOn = roundSummaries.reduce((s, r) => s + r.bogeyOnCount, 0);
 
     return {
       totalRounds, avgScore, bestScore, worstScore, avgPutts, fwRate,
@@ -91,8 +105,12 @@ const ScoreAnalysis = () => {
       birdieRate: totalHoles > 0 ? ((totalBirdie / totalHoles) * 100).toFixed(1) : 0,
       parRate: totalHoles > 0 ? ((totalPar / totalHoles) * 100).toFixed(1) : 0,
       bogeyRate: totalHoles > 0 ? ((totalBogey / totalHoles) * 100).toFixed(1) : 0,
-      doublePlusRate: totalHoles > 0 ? ((totalDouble / totalHoles) * 100).toFixed(1) : 0,
-      totalBirdie, totalPar, totalBogey, totalDouble,
+      doubleRate: totalHoles > 0 ? ((totalDouble / totalHoles) * 100).toFixed(1) : 0,
+      tripleRate: totalHoles > 0 ? ((totalTriple / totalHoles) * 100).toFixed(1) : 0,
+      quadPlusRate: totalHoles > 0 ? ((totalQuadPlus / totalHoles) * 100).toFixed(1) : 0,
+      parOnRate: totalHoles > 0 ? ((totalParOn / totalHoles) * 100).toFixed(1) : 0,
+      bogeyOnRate: totalHoles > 0 ? ((totalBogeyOn / totalHoles) * 100).toFixed(1) : 0,
+      totalBirdie, totalPar, totalBogey, totalDouble, totalTriple, totalQuadPlus,
       roundSummaries
     };
   }, [rounds]);
@@ -117,9 +135,41 @@ const ScoreAnalysis = () => {
     if (overallStats.totalBirdie > 0) d.push({ name: 'バーディ以下', value: overallStats.totalBirdie });
     if (overallStats.totalPar > 0) d.push({ name: 'パー', value: overallStats.totalPar });
     if (overallStats.totalBogey > 0) d.push({ name: 'ボギー', value: overallStats.totalBogey });
-    if (overallStats.totalDouble > 0) d.push({ name: 'ダブル以上', value: overallStats.totalDouble });
+    if (overallStats.totalDouble > 0) d.push({ name: 'ダブルボギー', value: overallStats.totalDouble });
+    if (overallStats.totalTriple > 0) d.push({ name: 'トリプルボギー', value: overallStats.totalTriple });
+    if (overallStats.totalQuadPlus > 0) d.push({ name: '+4以上', value: overallStats.totalQuadPlus });
     return d;
   }, [overallStats]);
+
+  // ===================== ホール別パーオン率・ボギーオン率 =====================
+  const holeOnRateData = useMemo(() => {
+    if (rounds.length === 0) return [];
+    return Array.from({ length: 18 }, (_, i) => {
+      const holeNum = i + 1;
+      const par = parArray[i];
+      let total = 0, parOnCount = 0, bogeyOnCount = 0;
+
+      rounds.forEach(round => {
+        const hole = round.holes[holeNum];
+        if (!hole || !hole.score) return;
+        total++;
+        const shotsToGreen = hole.score - (hole.putts || 0);
+        if (shotsToGreen <= par - 2) parOnCount++;
+        else if (shotsToGreen === par - 1) bogeyOnCount++;
+      });
+
+      return {
+        hole: `H${holeNum}`,
+        holeNum,
+        par,
+        parOnRate: total > 0 ? parseFloat(((parOnCount / total) * 100).toFixed(1)) : 0,
+        bogeyOnRate: total > 0 ? parseFloat(((bogeyOnCount / total) * 100).toFixed(1)) : 0,
+        parOnCount,
+        bogeyOnCount,
+        total
+      };
+    });
+  }, [rounds]);
 
   // ===================== ホール別平均スコア =====================
   const holeAvgData = useMemo(() => {
@@ -166,7 +216,7 @@ const ScoreAnalysis = () => {
     if (!overallStats) return [];
     const rs = overallStats;
     // 各スキルを0-100スケールに正規化
-    const parOnPct = parseFloat(rs.parRate) + parseFloat(rs.birdieRate);
+    const parOnPct = parseFloat(rs.parOnRate);
     const fwPct = rs.fwRate !== '-' ? parseFloat(rs.fwRate) : 0;
     // パット: 平均36パットを基準（低いほど良い）
     const puttScore = Math.max(0, Math.min(100, (36 - parseFloat(rs.avgPutts)) / 36 * 100 + 50));
@@ -332,8 +382,90 @@ const ScoreAnalysis = () => {
               <div className="dist-row"><span className="dist-dot" style={{ background: '#4ecdc4' }} />バーディ以下: <strong>{overallStats.birdieRate}%</strong></div>
               <div className="dist-row"><span className="dist-dot" style={{ background: '#ff6b6b' }} />パー: <strong>{overallStats.parRate}%</strong></div>
               <div className="dist-row"><span className="dist-dot" style={{ background: '#f8b500' }} />ボギー: <strong>{overallStats.bogeyRate}%</strong></div>
-              <div className="dist-row"><span className="dist-dot" style={{ background: '#667eea' }} />ダブル以上: <strong>{overallStats.doublePlusRate}%</strong></div>
+              <div className="dist-row"><span className="dist-dot" style={{ background: '#667eea' }} />ダブルボギー: <strong>{overallStats.doubleRate}%</strong></div>
+              <div className="dist-row"><span className="dist-dot" style={{ background: '#e67e22' }} />トリプルボギー: <strong>{overallStats.tripleRate}%</strong></div>
+              <div className="dist-row"><span className="dist-dot" style={{ background: '#e74c3c' }} />+4以上: <strong>{overallStats.quadPlusRate}%</strong></div>
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* ===== パーオン率・ボギーオン率 ===== */}
+      {holeOnRateData.length > 0 && overallStats && (
+        <section className="analysis-section">
+          <h2>🟢 パーオン率・ボギーオン率</h2>
+          <div className="on-rate-summary">
+            <div className="on-rate-card par-on">
+              <span className="on-rate-label">パーオン率</span>
+              <span className="on-rate-value">{overallStats.parOnRate}%</span>
+              <span className="on-rate-desc">ショット数 ≤ Par - 2</span>
+            </div>
+            <div className="on-rate-card bogey-on">
+              <span className="on-rate-label">ボギーオン率</span>
+              <span className="on-rate-value">{overallStats.bogeyOnRate}%</span>
+              <span className="on-rate-desc">ショット数 = Par - 1</span>
+            </div>
+            <div className="on-rate-card combined">
+              <span className="on-rate-label">ボギーオン以上</span>
+              <span className="on-rate-value">{(parseFloat(overallStats.parOnRate) + parseFloat(overallStats.bogeyOnRate)).toFixed(1)}%</span>
+              <span className="on-rate-desc">パーオン + ボギーオン</span>
+            </div>
+          </div>
+          <h3 style={{ textAlign: 'center', margin: '1.5rem 0 0.5rem', color: '#555', fontSize: '1rem' }}>⛳ ホール別 パーオン率 / ボギーオン率</h3>
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={holeOnRateData} barGap={0}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="hole" tick={{ fontSize: 11 }} />
+                <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+                <Tooltip
+                  formatter={(val, name) => {
+                    const labels = { parOnRate: 'パーオン率', bogeyOnRate: 'ボギーオン率' };
+                    return [`${val}%`, labels[name] || name];
+                  }}
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload || payload.length === 0) return null;
+                    const d = payload[0].payload;
+                    return (
+                      <div style={{ background: '#fff', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 6, fontSize: '0.85rem' }}>
+                        <p style={{ margin: 0, fontWeight: 'bold' }}>{label} (Par {d.par})</p>
+                        <p style={{ margin: '4px 0 0', color: '#38c172' }}>パーオン: {d.parOnRate}% ({d.parOnCount}/{d.total})</p>
+                        <p style={{ margin: '4px 0 0', color: '#f59e0b' }}>ボギーオン: {d.bogeyOnRate}% ({d.bogeyOnCount}/{d.total})</p>
+                      </div>
+                    );
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="parOnRate" fill="#38c172" name="パーオン率" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="bogeyOnRate" fill="#f59e0b" name="ボギーオン率" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="on-rate-table-wrapper">
+            <table className="on-rate-table">
+              <thead>
+                <tr>
+                  <th>Hole</th>
+                  <th>Par</th>
+                  <th>パーオン率</th>
+                  <th>ボギーオン率</th>
+                  <th>合計</th>
+                  <th>データ数</th>
+                </tr>
+              </thead>
+              <tbody>
+                {holeOnRateData.map(h => (
+                  <tr key={h.holeNum}>
+                    <td className="hole-num-cell">{h.holeNum}</td>
+                    <td>{h.par}</td>
+                    <td style={{ color: '#38c172', fontWeight: 600 }}>{h.parOnRate}%</td>
+                    <td style={{ color: '#f59e0b', fontWeight: 600 }}>{h.bogeyOnRate}%</td>
+                    <td style={{ fontWeight: 600 }}>{(h.parOnRate + h.bogeyOnRate).toFixed(1)}%</td>
+                    <td className="data-count">{h.total}R</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
       )}

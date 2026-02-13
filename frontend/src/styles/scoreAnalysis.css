@@ -296,6 +296,107 @@
   max-width: 200px;
 }
 
+/* ===== On Rate (Par On / Bogey On) ===== */
+.on-rate-summary {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.on-rate-card {
+  flex: 1;
+  min-width: 140px;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2rem 1rem;
+  border-radius: 12px;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.on-rate-card.par-on {
+  border-color: #c6f6d5;
+  background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+}
+
+.on-rate-card.bogey-on {
+  border-color: #fef3c7;
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+}
+
+.on-rate-card.combined {
+  border-color: #c3dafe;
+  background: linear-gradient(135deg, #ebf4ff, #c3dafe);
+}
+
+.on-rate-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.on-rate-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.on-rate-card.par-on .on-rate-value { color: #276749; }
+.on-rate-card.bogey-on .on-rate-value { color: #92400e; }
+.on-rate-card.combined .on-rate-value { color: #3730a3; }
+
+.on-rate-desc {
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
+.on-rate-table-wrapper {
+  overflow-x: auto;
+  margin-top: 1.5rem;
+}
+
+.on-rate-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 0.9rem;
+}
+
+.on-rate-table th,
+.on-rate-table td {
+  padding: 0.6rem 0.8rem;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.on-rate-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.85rem;
+}
+
+.on-rate-table tr:hover {
+  background: #fafafa;
+}
+
+.on-rate-table .hole-num-cell {
+  font-weight: 700;
+  color: #667eea;
+}
+
+.on-rate-table .data-count {
+  color: #999;
+  font-size: 0.8rem;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 480px) {
   .summary-grid {
@@ -309,5 +410,15 @@
   }
   .ranking-item {
     font-size: 0.82rem;
+  }
+  .on-rate-summary {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .on-rate-card {
+    max-width: none;
+  }
+  .on-rate-value {
+    font-size: 1.6rem;
   }
 }

@@ -124,12 +124,15 @@ const HoleDetail = () => {
       return roundCount > 0 ? ((count / roundCount) * 100).toFixed(1) : 0;
     };
 
-    // パーオン率（バーディ以下 + パー）
-    const parOnCount = birdieOrBetterCount + parCount;
+    // パーオン率（ショット数 = score - putts が par - 2 以下）
+    const parOnCount = holeHistory.filter(h => (h.score - h.putts) <= (holePar - 2)).length;
     const parOnRate = calcPercentage(parOnCount);
 
-    // ボギーオン率（ボギー + ダブルボギー）
-    const bogeyOnCount = bogeyCount + doubleBogeyCount;
+    // ボギーオン率（ショット数 = score - putts が par - 1 以下、かつパーオンでない）
+    const bogeyOnCount = holeHistory.filter(h => {
+      const shotsToGreen = h.score - h.putts;
+      return shotsToGreen === (holePar - 1);
+    }).length;
     const bogeyOnRate = calcPercentage(bogeyOnCount);
 
     return {
